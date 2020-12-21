@@ -1,0 +1,1277 @@
+/* Apollo Theme JS */
+
+$(document).ready(function() {
+
+    // MG - Move pagination and sort button upwards in search results to compensate for move of articles plus button,
+    // fix height of containing div, calculating height of spellchecking (if shown) to accommodate it
+    // (used in AI block for spellcheck and MG opac updates July 2019)
+    function correctMargins(sortMargin, pagingMargin) {
+        var didyoumeanMargin = 0;
+        if ($("#didyoumean-wp").length) {
+            didyoumeanMargin = $("#didyoumean-wp").height() + parseInt($("#didyoumean-wp").css('margin-top').replace("px", ""));
+            sortMargin = sortMargin + didyoumeanMargin;
+            pagingMargin = pagingMargin + didyoumeanMargin;
+        }
+        $("div.sort_by.pull-right").css({
+            "margin-top": "-" + sortMargin + "px",
+            "position": "relative",
+            "z-index": "999",
+            "padding-right": "7px"
+        });
+        $("#top-pages > div.pagination").css({
+            "margin-top": "-" + pagingMargin + "px"
+        });
+    }
+
+    //Hide LCF Archive from the hold pickup list
+    $("[id^=branch] option[value='LCFA']").remove();
+    //End of hide hold pickup location snippet.
+
+    $("#opac-main .mastheadsearch").remove();
+
+    // JF/MG - Get OPAC URL parameters so we can find the query parameter
+    function getUrlVars() {
+        var vars = [],
+            hash;
+        var hashes = window.location.href.slice(window.location.href.indexOf('?') + 1).split('&');
+        for (var i = 0; i < hashes.length; i++) {
+            hash = hashes[i].split('=');
+            if (!(hash[0] in vars)) {
+                vars.push(hash[0]);
+                vars[hash[0]] = decodeURIComponent(hash[1]);
+            } else {
+                vars[hash[0]] = vars[hash[0]] + '~' + decodeURIComponent(hash[1]);
+            }
+        }
+        return vars;
+    }
+
+
+    var queryString1 = getUrlVars()["q"];
+    var queryString = unescape(queryString1);
+    var queryString2 = queryString.replace(/~/g, ' ');
+    var queryString2 = queryString.replace(/\+/g, ' ');
+    // END Get parameters
+
+    // Keep querystring in search box after a search
+    if (queryString !== 'undefined') {
+        $('#field_search1').val(queryString2);
+    }
+
+
+
+    // JM - Document Title
+    $(document.title = 'University of the Arts Library Catalogue');
+
+    // Change catalog to UAL collections and ebooks in search dropdown select
+    $("#masthead_search :contains('Library catalog')").html("Library catalogue");
+
+    //Rename Collection to Material on Advanced search
+    $("a[href='#advsearch-ccode']:contains('Collection')").html('Material');
+
+    //Rename Collection to Material on item detail column headers
+    $("th#item_ccode:contains('Collection')").html('Material types');
+
+    //Rename Item Type to Loan Period on item detail column headers
+    $("th#item_itemtype:contains('Item type')").html('Loan period');
+
+    $("a[href$='format=ris']").html('Zotero (RIS format)');
+    $("select#format > option[value='ris']").html('Zotero (RIS format)');
+
+    // JF - Hide regular login box and other login related stuff
+    $('div#login').remove();
+
+
+    // JF - Control whether login box displays or not (depending if logged in)
+    if ($('.loggedinusername').length) {
+        $('div#session').hide();
+        $('div#logout').show();
+    } else {
+        $('div#session').show();
+        $('div.logout-link').hide();
+    }
+
+    $('.loginModal-trigger').remove();
+
+    // JF - END of login stuff
+
+    // MR - Attempt to get Cart Working Correctly
+    // Remove original DOM elements (using full paths)
+    var dropdown = $("#header-region > div.navbar.navbar-inverse.navbar-static-top > div > div > ul").detach();
+    dropdown.prependTo("#opacresultssidebar");
+    var message = $("#header-region > div.navbar.navbar-inverse.navbar-static-top > div > div > div.cart-message").detach();
+    message.prependTo("#opacresultssidebar");
+    $("#opacresultssidebar > ul:nth-child(2) > li:nth-child(1)").addClass("sidebarBtn");
+    $("#opacresultssidebar > ul:nth-child(2) > li:nth-child(3)").addClass("sidebarBtn");
+    $("#carticon").removeClass("icon-shopping-cart icon-white").addClass("fa fa-folder-open");
+
+    $(".incart").before('<a class="fa fa-folder-open fullcart"</a>');
+    $(".incart").removeClass("incart").addClass("fullcart");
+    // MR - END
+
+    // CG - Dynamic tabs for Search box
+    $(".tabContent").hide();
+    $("ul.tabs li:first").addClass("active").show();
+    $(".tabContent:first").show();
+
+    $("ul.tabs li").click(function() {
+        $("ul.tabs li").removeClass("active");
+        $(this).addClass("active");
+        $(".tabContent").hide();
+        var activeTab = $(this).find("a").attr("href");
+        $(activeTab).fadeIn();
+        return false;
+    });
+
+    $(".tabContent2").hide();
+    $("ul.tabs2").hide();
+    $("ul.tabs2 li:first").addClass("active").show();
+    $(".tabContent2:first").show();
+
+
+    $('.tabContainer2').attr('id', 'opac-main-search').prepend('<select><option value="0">Search Catalogue</option><option value="1">Search Articles Plus</option></select>');
+
+    $(".tabContent2:first").show();
+
+    $('.mastheadsearch select').change(function() {
+        if (this.value == '0') {
+            $('#tab22').hide();
+            $('#tab12').fadeIn();
+        } else {
+            $('#tab22').fadeIn();
+            $('#tab12').hide();
+        }
+
+    });
+
+    // CG - End of Dynamic tabs on search
+
+    // AS - Date Slider on facets
+    $.getScript("/opac-tmpl/bootstrap/lib/slider/js/bootstrap-slider.js", function() {
+        // AS - advanced get UrlVars: deal with multiple query params.
+        var myGetUrlVars = function() {
+            var vars = [],
+                hash;
+            var hashes = window.location.href.slice(window.location.href.indexOf('?') + 1).split('&');
+            // We return an array, with each key an array of values.
+            // (Each query param could occur more than once).
+            for (var i = 0; i < hashes.length; i++) {
+                hash = hashes[i].split('=');
+                var k = hash[0];
+                var v = hash[1];
+                if (vars[k] instanceof Array) {
+                    vars[k].push(v);
+                } else {
+                    vars.push(k);
+                    vars[k] = [v];
+                }
+            }
+            return vars;
+        }
+        var urlVars = myGetUrlVars();
+        var limit_yr = urlVars["limit-yr"];
+        if (typeof limit_yr == 'undefined') {
+            limit_yr = decodeURIComponent(urlVars["limit"]);
+            if (limit_yr.includes("yr,st-numeric") && limit_yr.includes(",")) {
+                limit_yr = limit_yr.match(/yr,st-numeric\S*/g);
+                limit_yr[0] = limit_yr[0].replace("yr,st-numeric=", "");
+                limit_yr[0] = limit_yr[0].replace(",", "");
+            }
+        }
+        if (limit_yr instanceof Array && !limit_yr[0] == "") {
+            original = limit_yr[0].split("-").join(",");
+        }
+        var startyear = new Date().getFullYear() - 100;
+        var endyear = new Date().getFullYear();
+        if (typeof original == 'undefined') {
+            var original = startyear + "," + endyear;
+        }
+        //var original = startyear+","+endyear;
+        $('#search-facets > ul').append(
+            "<li id='date-li'><h1 id='date-range'>Date Range</h1>" +
+            "<ul>" +
+            "<li>" +
+            '<input id="ualdateslider" type="text" value="' +
+            original +
+            '" data-slider-min="' + startyear + '" data-slider-max="' + endyear +
+            '" data-slider-step="1" data-slider-value="[' +
+            original +
+            ']" />' +
+            '</br>' +
+            '<input type="text" name="stext" id="stext" style="width:35%;" value="' + startyear + '" /> to <input type="text" name="etext" id="etext" style="width:35%;" value="' + endyear + '" />' +
+            '<button id="ualdaterefine" type="button" class="btn btn-primary btn-sm">Refine Date</button>' +
+            "</li>" +
+            "</ul>" +
+            "</li>"
+        );
+        if (typeof original != 'undefined') {
+            var yrs = original.split(",");
+            $("#stext").val(yrs[0]);
+            $("#etext").val(yrs[1].substring(0, 4));
+        }
+        if ($('#ualdateslider').prop("value")) {
+            $("#ualdateslider").bootstrapSlider({
+                tooltip: 'hide'
+            });
+        }
+        $("#ualdateslider").on("slide", function(slideEvt) {
+            var limitdates = (slideEvt.value.toString()).split(',');
+            $("#stext").val(limitdates[0]);
+            $("#etext").val(limitdates[1]);
+        });
+        $("#stext").change(function(e) {
+            $('#ualdateslider').bootstrapSlider('setValue', [parseInt($("#stext").val()), parseInt($("#etext").val())], true, true);
+        });
+        $("#etext").change(function() {
+            $('#ualdateslider').bootstrapSlider('setValue', [parseInt($("#stext").val()), parseInt($("#etext").val())], true, true);
+        });
+        $('#ualdaterefine').click(function() {
+            var url = "";
+            //var range = $("#ualdateslider").val().split(",").join("-");
+            var range = $("#stext").val() + '-' + $("#etext").val();
+            if (limit_yr) {
+                var qstring = urlVars.map(function(val) {
+                    if (val == "limit-yr") {
+                        return val + "=" + range;
+                    } else {
+                        return val + "=" + urlVars[val].join("&" + val + "=");
+                    }
+                }).join("&");
+                url = "//" + location.hostname + location.pathname + "?" + qstring;
+            } else {
+                url = location + "&limit-yr=" + range;
+            }
+            location.assign(url);
+        });
+    });
+
+    $('#facetcontainer ul li ul').addClass('hide');
+    $('#facetcontainer ul li').click(function() {
+        $(this).toggleClass('active');
+        $('.hide', this).slideToggle();
+    });
+
+    // MG auto expand facets that have a filter applied or where show more has been clicked
+    function expandFacet(f) {
+        if (document.getElementById(f + '_id')) {
+            document.getElementById(f + '_id').click();
+        }
+    }
+
+    // build an array from the limit and nolimit URL parameters
+    function getFacetLimits(limitvars, nolimitvars) {
+        var facetlimits = new Array();
+        if (typeof limitvars != 'undefined') {
+            var facet;
+            var limits = limitvars.split('~');
+            if (typeof nolimitvars != 'undefined') {
+                var pos = limits.indexOf(nolimitvars);
+                limits.splice(pos, 1);
+            }
+            for (var i = 0; i < limits.length; i++) {
+                facet = limits[i].split(':');
+                if (!(facet[0] in facetlimits)) {
+                    facetlimits.push(facet[0]);
+                }
+            }
+        }
+        return facetlimits;
+    }
+
+    // grab the value from expand URL parameter
+    function getMoreFacets(expandvars) {
+        var expandfacet;
+        if (typeof expandvars != 'undefined') {
+            var expand = expandvars.split('#');
+            expandfacet = expand[0];
+        }
+        return expandfacet;
+    }
+    var facetvars = getUrlVars(); // get a hash of all URL parameters
+    var facetlimits = getFacetLimits(facetvars.limit, facetvars.nolimit); // get an array of limit parameters with nolimit parameters removed
+    var expandfacet = getMoreFacets(facetvars.expand); // get a value for any facet where Show more has been clicked
+
+    // combine facets that have limits applied and show more facets
+    if (typeof expandfacet != 'undefined') {
+        facetlimits.push(expandfacet);
+    }
+    // take out empty vars
+    facetlimits = facetlimits.filter(Boolean)
+    // unique values only
+    var expandFacets = facetlimits.filter(function(elem, index, self) {
+        return index == self.indexOf(elem);
+    });
+    // expand facets in the array
+    if (typeof expandFacets !== 'undefined') {
+        for (var i = 0, len = expandFacets.length; i < len; i++) {
+            expandFacet(expandFacets[i]);
+        }
+    }
+
+    // AS - END of date slider
+
+    // JM hide words for Normal view
+    $("span#Normalview:contains('Normal view')").hide();
+
+    // MG hide places in facets
+    $("li#su-geo_id").hide();
+
+    // MG add to session folder notification from full record view
+    $("div#listsDetails").append('<a href="#" id="cartmenulink"></a>');
+    $("a.addtocart").bind("click", function() {
+        //$("a.addtocart").text('In your session folder');
+        //$("a.cartRemove").show();
+        //return false;
+    });
+
+    //MG share buttons
+    /*$("div#ulactioncontainer").append('<div style="margin-top:10px;"><div style="float:left;"><a href="#" id="sharetoggle"><img src="/opac-tmpl/bootstrap/images/icon-share.png" title="Share" alt="Share" style="margin-left:6px; margin-right:6px;"/></a></div>'+
+        '<div id="sharebuttons" style="float:right;padding-right:100px;max-width:140px;">'+
+            '<a href="mailto:?subject='+$(document).find(".title").text()+'&body='+window.location.href+'"><img src="/opac-tmpl/bootstrap/images/icon-email.png" title="Email" alt="Email" style="margin-left:6px; margin-right:6px;"/></a>'+
+                '<a href="http://twitter.com/home?status='+$(document).find(".title").text()+'+'+window.location.href+'" target="_blank"><img src="/opac-tmpl/bootstrap/images/icon-twitter.png" title="Twitter" alt="Twitter" style="margin-left:6px; margin-right:6px;"/></a>'+
+                    '<a href="http://www.facebook.com/share.php?u='+window.location.href+'&title='+$(document).find(".title").text()+'" target="_blank"><img src="/opac-tmpl/bootstrap/images/icon-facebook.png" title="Facebook" alt="Facebook" style="margin-left:6px; margin-right:6px;"/></a>'+
+                        '</div></div><p id="sharetext" style="padding-top:4px;"><strong>Share</strong></p>'
+                            );
+                                $("#sharetoggle").bind("click", function() {
+                                        //$("#sharebuttons").slideToggle(150);
+                                                $("#sharebuttons").toggle("slide", function() {
+                                                            $("#sharetext").toggle();
+                                                                    });
+
+                                                                                    return false;
+                                                                                        });
+                                                                                            $(document).ready(function() {
+                                                                                                    $("#sharebuttons").toggle();
+                                                                                                        });*/
+
+    // JM Advanced search hides and renames
+    $("option[value='pl,wrdl']").hide();
+    $("option[value='curriculum']").hide();
+    $("option[value='callnum']").html('Shelved at');
+
+    // JM hide available filter on Advanced search
+    $("label[for='available-items']").hide();
+
+    // JM Sorting
+    $("optgroup[label='Popularity']").hide();
+    $("option[value='acqdate_dsc']").hide();
+    $("option[value='acqdate_asc']").hide();
+    $("option[value='title_za']").hide();
+    $("option[value='author_za']").hide();
+    $("optgroup[label='Call Number']").attr('label', 'Shelved at');
+    $("option[value='call_number_asc']").html('Shelved at');
+    $("option[value='call_number_dsc']").hide();
+    $("option[value='pubdate_asc']").html('Publication date: Oldest to newest');
+    $("option[value='pubdate_dsc']").html('Publication date: Newest to oldest');
+
+    // JM hide branches from pulldown lists
+    //$("select#branchloop option[value='branch:CSMM']").remove();
+    $("select[name='branch'] > option[value='CSMM']").remove();
+    $("select#branchloop option[value='branch:ELEC']").remove();
+    $("select[name='branch'] > option[value='ELEC']").remove();
+    $("select#branchloop option[value='branch:LZ']").remove();
+    $("select[name='branch'] > option[value='LZ']").remove();
+    $("select#branchloop option[value='branch:UALRO']").remove();
+    $("select[name='branch'] > option[value='UALRO']").remove();
+    $("select#branchloop option[value='branch:SEC']").remove();
+    $("select[name='branch'] > option[value='SEC']").remove();
+    $("select#branchloop option[value='branch:RANDS']").remove();
+    $("select[name='branch'] > option[value='RANDS']").remove();
+
+    // JM hide ELEC from facets
+    $("#homebranch_id > ul:nth-child(2) > li:nth-child(6)").hide();
+
+    // JM More searches
+    $("a#furthersearches.dropdown-toggle").html('Search other catalogues <strong class="caret"></strong>');
+    $("a#format.dropdown-toggle").html('Export record <strong class="caret"></strong>');
+
+    // JM Call number
+    $("th#item_callnumber").html('Shelved at');
+
+    // JM purchase suggestions
+    $("div.suggestion").html("Can't find what you are looking for? Suggest a <a href='/cgi-bin/koha/opac-suggestions.pl?op=add'>new item for the library</a>");
+    $("h1:contains('Your purchase suggestions')").html('Your new item suggestions');
+    $("a.new:contains('New purchase suggestion')").html('Suggest a new item for the library');
+    $("h1:contains('Enter a new purchase suggestion')").html('Suggest a new item for the library');
+    $("div.alert.alert-info:contains('Your suggestion has been submitted.')").after('<p>Suggest a <a class="new" href="/cgi-bin/koha/opac-suggestions.pl?op=add">new item</a></p>');
+    $("p:contains('Please fill out this form to make a purchase suggestion. You will receive an email when the library processes your suggestion')").html('Please fill out this form with as much information as possible. You will receive an email when the library processes your suggestion.');
+    $("li label[for='copyrightdate']").html('Date:');
+    $("li label[for='note']").html('Any other information:');
+    $("li label[for='publishercode']").hide();
+    $("input#publishercode").hide();
+    $("li label[for='collectiontitle']").hide();
+    $("input#collectiontitle").hide();
+    $("li label[for='place']").hide();
+    $("input#place").hide();
+    $("li label[for='itemtype']").hide();
+    $("select#itemtype").hide();
+    $("select#patronreason").replaceWith('<input type="text" maxlength="100" class="span6">');
+
+    //JM UAL itemtypes
+    $("div#advsearch-itemtypes > fieldset").replaceWith('<fieldset><legend>Limit to any of the following:</legend><div class="row-fluid"><div class="span3"><input type="checkbox" value="mc-itype,phr:1W" name="limit" id="itypephr-16"><label for="itypephr-16">  1 week loan</label></div> <div class="span3"><input type="checkbox" value="mc-itype,phr:3H" name="limit" id="itypephr-17"><label for="itypephr-17">  3 hour loan</label></div> <div class="span3"><input type="checkbox" value="mc-itype,phr:3W" name="limit" id="itypephr-18"><label for="itypephr-18">  3 week loan</label></div></div><div class="row-fluid"> <div class="span3"><input type="checkbox" value="mc-itype,phr:REF" name="limit" id="itypephr-25"><label for="itypephr-25">  Reference</label></div> <div class="span3"><input type="checkbox" value="mc-itype,phr:SD" name="limit" id="itypephr-26"><label for="itypephr-26">  Same day loan</label></div></div></fieldset>');
+
+    //JM UAL ccodes
+    $("div#advsearch-ccode > fieldset").replaceWith('<fieldset> <legend>Limit to any of the following:</legend> <div class="row-fluid"> <div class="span3"><input type="checkbox" value="mc-ccode:ARCMAT" name="limit" id="ccode-0"><label for="ccode-0"><img alt="Archive materials" src="/opac-tmpl/bootstrap/itemtypeimg/ual/archive_materials.png">  Archive materials</label></div> <div class="span3"><input type="checkbox" value="mc-ccode:ARTOB" name="limit" id="ccode-1"><label for="ccode-1"><img alt="Art objects" src="/opac-tmpl/bootstrap/itemtypeimg/ual/art_objects.png">  Art objects</label></div>  <div class="span3"><input type="checkbox" value="mc-ccode:ARTBK" name="limit" id="ccode-3"><label for="ccode-3"><img alt="Artists books" src="/opac-tmpl/bootstrap/itemtypeimg/ual/artist_books.png">  Artists books</label></div> <div class="span3"><input type="checkbox" value="mc-ccode:ACASS" name="limit" id="ccode-4"><label for="ccode-4"><img alt="Audio cassettes" src="/opac-tmpl/bootstrap/itemtypeimg/ual/audio_cassettes.png">  Audio cassettes</label></div> </div> <div class="row-fluid">  <div class="span3"><input type="checkbox" value="mc-ccode:CD" name="limit" id="ccode-5"><label for="ccode-5"><img alt="CDs" src="/opac-tmpl/bootstrap/itemtypeimg/ual/cds.png">  CDs and vinyl</label></div> <div class="span3"><input type="checkbox" value="mc-ccode:DVD" name="limit" id="ccode-6"><label for="ccode-6"><img alt="DVDs" src="/opac-tmpl/bootstrap/itemtypeimg/ual/dvds.png">  DVDs</label></div> <div class="span3"><input type="checkbox" value="mc-ccode:EBK" name="limit" id="ccode-7"><label for="ccode-7"><img alt="e-Books" src="/opac-tmpl/bootstrap/itemtypeimg/ual/ebooks.png">  e-Books</label></div> <div class="span3"><input type="checkbox" value="mc-ccode:EJOURN" name="limit" id="ccode-8"><label for="ccode-8"><img alt="e-Journals" src="/opac-tmpl/bootstrap/itemtypeimg/ual/ejournals.png">  e-Journals</label></div> </div> <div class="row-fluid">  <div class="span3"><input type="checkbox" value="mc-ccode:FILMS" name="limit" id="ccode-9"><label for="ccode-9"><img alt="Film scripts" src="/opac-tmpl/bootstrap/itemtypeimg/ual/film_scripts.png">  Film scripts</label></div> <div class="span3"><input type="checkbox" value="mc-ccode:JOUR" name="limit" id="ccode-10"><label for="ccode-10"><img alt="Journals" src="/opac-tmpl/bootstrap/itemtypeimg/ual/journals.png">  Journals</label></div> <div class="span3"><input type="checkbox" value="mc-ccode:PBK" name="limit" id="ccode-12"><label for="ccode-12"><img alt="Printed books" src="/opac-tmpl/bootstrap/itemtypeimg/ual/printed_books.png">  Printed books</label></div> <div class="span3"><input type="checkbox" value="mc-ccode:ESTREAM" name="limit" id="ccode-13"><label for="ccode-13"><img alt="Streaming media" src="/opac-tmpl/bootstrap/itemtypeimg/ual/streaming_media.png">  Streaming media</label></div> </div><div class="row-fluid">  <div class="span3"><input type="checkbox" value="mc-ccode:THE" name="limit" id="ccode-14"><label for="ccode-14"><img alt="Theses & dissertations" src="/opac-tmpl/bootstrap/itemtypeimg/ual/thesis.png">  Theses & dissertations</label></div> <div class="span3"><input type="checkbox" value="mc-ccode:VHS" name="limit" id="ccode-15"><label for="ccode-15"><img alt="VHS videocassettes" src="/opac-tmpl/bootstrap/itemtypeimg/ual/vhs.png">  VHS videocassettes</label></div> </div></fieldset>');
+
+    // JM My account label changes
+    $("li > a[href='/cgi-bin/koha/opac-suggestions.pl']").html('Your new item suggestions');
+    $("li > a[href='/cgi-bin/koha/opac-readingrecord.pl']").html('Your borrowing history');
+    $("li > a[href='/cgi-bin/koha/opac-messaging.pl']").html('Your settings');
+    $("h3:contains('Checkout history')").html('Borrowing history');
+    $("h3:contains('Your messaging settings')").html('Your message settings');
+    $("li > a[href='/cgi-bin/koha/opac-shelves.pl?op=list&category=1']").html('Your lists');
+    $("li > a[href='/cgi-bin/koha/opac-search-history.pl']").html('Your search history');
+    $("li > a[href='/cgi-bin/koha/opac-account.pl']").html('Your fines');
+    $("li > a[href='/cgi-bin/koha/opac-user.pl']").html('Your summary');
+    $("li > a[href='/cgi-bin/koha/opac-ill.pl']").html('Your interlibrary loans');
+
+    //JF remove branch from hold pickup choices
+    $("[id^='branch'] option[value='ASCC']").remove();
+
+    // JM Authority search rename
+    $("li > a[href='/cgi-bin/koha/opac-authorities-home.pl']").html('Name and Subject searches');
+    $("fieldset.rows > legend:contains('Authority search')").html('Name and Subject searches');
+    $("h1:contains('Authority search results')").html('Name and Subject search results');
+    $("label[for='authtypecode']").html('Name/Subject type:');
+    $("select#orderby > option[value='HeadingAsc']").html('Heading A to Z');
+    $("select#orderby > option[value='HeadingDsc']").html('Heading Z to A');
+    $("div#userauthsearchresults > div.searchresults > table > thead > tr > th:contains('Type of heading')").hide();
+    $("div#userauthsearchresults > div.searchresults > table > tbody > tr > td:nth-child(2)").hide();
+    $("div#userauthsearchresults > div.searchresults > table > thead > tr > th:contains('Biblio records')").html('Item records');
+    $("option[value='CHRON_TERM']").hide();
+    $("option[value='GENRE/FORM']").hide();
+    $("option[value='UNIF_TITLE']").hide();
+    $("option[value='TOPIC_TERM']").html('Subject');
+    $("ul.breadcrumb > li > a:contains('Authority search')").html('Name and Subject search');
+    $("select#authtypecode > option:contains('Default')").html('All');
+
+    // Rename purchase suggestions breadcrumb
+    $("ul.breadcrumb > li > a:contains('Your purchase suggestions')").html('Your new item suggestions');
+
+    // JM Lists
+    $("div#privateshelves > .table > thead > tr > th:contains('Type')").hide();
+    $(".table > tbody > tr > td:contains('Private')").hide();
+    $("option[value='itemcallnumber']").html('Shelved at');
+    $("h2:contains('Share a list with another patron')").html('Share your list');
+    $("input#invite_address").width('250');
+    $("label[for='category']").hide();
+    $("select#category").hide();
+    $("optgroup[label='Private Lists']").attr('label', '');
+    $("optgroup[label='Public Lists']").attr('label', '');
+
+    //JM Paynow button
+    //$("table#finest > thead").append('<tr><td colspan="4"><button id="paynow" class="btn btn-primary pull-right" name="paynow" type="submit">Pay Now</button></td></tr>');
+    // MG updated 21.11.16 $("div#useraccount > h3").prepend('<div id="paybutton" style="float: right; margin-right: 22px;"><button id="paynow" class="btn btn-primary pull-right" name="paynow" type="submit">Pay Now</button></div>');
+
+    // JF My Account
+    $("#menu [href='/cgi-bin/koha/opac-memberentry.pl']").remove('');
+    $("th.sorting:contains('Call no.')").html('Shelved at');
+
+    // JF - Hide fines column with pointless "no" in it
+    $("th.sorting:contains('Fines')").hide();
+    $("#overduest > tbody:nth-child(3) > tr > td:nth-child(6)").hide();
+
+    // Menu Icons
+    $("#menu [href='/cgi-bin/koha/opac-user.pl']").append('<i class="fa fa-file-text-o fa-2x"></i>');
+    $("#menu [href='/cgi-bin/koha/opac-account.pl']").append('<i class="fa fa-exclamation-triangle fa-2x"></i>');
+    $("#menu [href='/cgi-bin/koha/opac-search-history.pl']").append('<i class="fa fa-search fa-2x"></i>');
+    $("#menu [href='/cgi-bin/koha/opac-readingrecord.pl']").append('<i class="fa fa-mail-reply fa-2x"></i>');
+    $("#menu [href='/cgi-bin/koha/opac-suggestions.pl']").append('<i class="fa fa fa-leanpub fa-2x"></i>');
+    $("#menu [href='/cgi-bin/koha/opac-shelves.pl?op=list&category=1']").append('<i class="fa fa-list-ol fa-2x"></i>');
+    //$("#menu [href='/cgi-bin/koha/opac-shelves.pl?display=privateshelves']").append('<i class="fa fa-list-ol fa-2x"></i>');
+    $("#menu [href='/cgi-bin/koha/opac-messaging.pl']").append('<i class="fa fa-file-text-o fa-2x"></i>');
+    $("#menu [href='/cgi-bin/koha/opac-ill.pl']").append('<i class="fa fa-file-text-o fa-2x"></i>');
+
+    //JM Serials
+    $("div#subscriptions > table.table > tbody > tr > th:contains('Note')").hide();
+    $("div#subscriptions > table.table > tbody > tr > td:nth-child(4)").hide();
+
+    $("span.cartlabel").html('Session Folder&nbsp;<strong class="caret"></strong>');
+
+    $('div#moresearches > ul').prepend('<li><a href="/cgi-bin/koha/opac-main.pl" style="padding-top:7px;padding-bottom:7px;">Simple search</a></li>');
+
+
+    $("p#numresults").append('<form method="post" action="https://articlesplus.arts.ac.uk/search/desktop/en/default/search.html" target="_blank" id="articlesPlusForm" class="moreArticles"><input type="hidden" id="fullRecord" name="fullRecord" value="" /> <!-- fill in the value attribute with your search term --><input type="hidden" name="formName" value="ftonly" /><input type="hidden" name="fullTextOnly" value="true" /><button type="submit">See full text articles in Articles Plus</button><!-- search button, style as needed --></form>');
+
+    $("#articlesPlusForm #fullRecord").val(queryString);
+
+    // Rename Home as Library Search Home in breadcrumb
+    //$('a[href="/cgi-bin/koha/opac-main.pl"]').text("Library Search Home");
+
+    // Rename search string query_desc
+    //    $(".querycrumb").replaceWith('<a class="crumbquery" href="#">Results of search for: </a>' + queryString2);
+
+
+    // Remove Public lists from Lists menu
+    $(".menu-inactive:contains('No public lists')").remove();
+
+    // Wikipedia search auto-complete help
+    $("#field_search").autocomplete({
+        source: function(request, response) {
+            $.ajax({
+                url: "https://en.wikipedia.org/w/api.php",
+                dataType: "jsonp",
+                data: {
+                    'action': "opensearch",
+                    'format': "json",
+                    'search': request.term
+                },
+                success: function(data) {
+                    response(data[1]);
+                }
+            });
+        }
+    });
+
+    // AI - Spellcheck text
+    $.ajax({
+        url: "/cgi-bin/koha/wp-proxy.pl?spellcheck=" + queryString,
+        dataType: 'json',
+        success: function(data) {
+            qsCopy = queryString + '';
+            qsCopy = qsCopy.replace(/\+/g, ' ');
+            qsCopy = qsCopy.replace(/%20/g, " ");
+            var sugg = 0;
+            for (var key in data.suggestions) {
+                var opts = [];
+                for (var s = 0; s < data.suggestions[key].length; s++) {
+                    opts.push('<option value="' + data.suggestions[key][s] + '">' + data.suggestions[key][s] + '</option>');
+                    sugg++;
+                }
+                var sel = '<select id="spellsuggest-' + key + '" class="spellcheck">' + opts.join('') + '</select>';
+                qsCopy = qsCopy.replace(key, sel);
+            }
+
+            var markup = '<div id="didyoumean-wp" style="margin-top: 40px; padding: 0.5em; border-color: rgb(244, 236, 190); background-color: rgb(255, 251, 234);"><div class="suggestionlabel" style="margin-bottom:0.5em">Spelling suggestions:</div>' + qsCopy + ' <a style="cursor:pointer" href="#" id="spellcheck-search">Search again</a></div>';
+            if (sugg > 0) {
+                $(markup).insertAfter('#numresults');
+
+                correctMargins(85, 89);
+            }
+        }
+    });
+
+    // Spellcheck "search again"
+    $(document).on('click', '#spellcheck-search', function(event) {
+        event.preventDefault();
+        var url = window.location.href;
+        $("[id^=spellsuggest-]").each(function() {
+            var mis = $(this).attr('id').replace('spellsuggest-', '');
+            var sel = $(this).val();
+            url = url.replace(mis, encodeURIComponent(sel));
+        });
+        window.location = url;
+    });
+
+    // Wikipedia search auto-complete help for search results page
+    $("#field_search1").autocomplete({
+        source: function(request, response) {
+            $.ajax({
+                url: "https://en.wikipedia.org/w/api.php",
+                dataType: "jsonp",
+                data: {
+                    'action': "opensearch",
+                    'format': "json",
+                    'search': request.term
+                },
+                success: function(data) {
+                    response(data[1]);
+                }
+            });
+        }
+    });
+
+
+
+    // Hide Search options by default and display on click
+    $('.search-opt').hide();
+    $('.search-opt-cust').hide();
+    $('.search-opt-home').hide();
+
+    $(document).on('click', function(e) {
+        var elem = $(e.target).closest('.transl1, .ui-autocomplete-input'),
+            box = $(e.target).closest('.search-opt');
+
+        if (elem.length) { // the anchor was clicked
+            e.preventDefault(); // prevent the default action
+            $('.search-opt').toggle(); // toggle visibility
+        } else if (!box.length) { // the document, but not the anchor or the div
+            $('.search-opt').hide(); // was clicked, hide it !
+        }
+    });
+
+    $(document).on('click', function(e) {
+        var elem = $(e.target).closest('#c_fullRecord, .TextInput'),
+            box = $(e.target).closest('.search-opt-cust');
+
+        if (elem.length) { // the anchor was clicked
+            e.preventDefault(); // prevent the default action
+            $('.search-opt-cust').toggle(); // toggle visibility
+        } else if (!box.length) { // the document, but not the anchor or the div
+            $('.search-opt-cust').hide(); // was clicked, hide it !
+        }
+    });
+
+    $(document).on('click', function(e) {
+        var elem = $(e.target).closest('#fullRecord, .TextInput'),
+            box = $(e.target).closest('.search-opt-home');
+
+        if (elem.length) { // the anchor was clicked
+            e.preventDefault(); // prevent the default action
+            $('.search-opt-home').toggle(); // toggle visibility
+        } else if (!box.length) { // the document, but not the anchor or the div
+            $('.search-opt-home').hide(); // was clicked, hide it !
+        }
+    });
+
+
+    // JM hide and group Shelving locations
+    $("div#advsearch-loc > fieldset").replaceWith('<fieldset> <legend>Limit to any of the following:</legend> <div class="row-fluid"><div class="span3"><input type="checkbox" id="loc-31" name="limit" value="mc-loc:ACAA"><label for="loc-31">  African-Caribbean, Asian & African Art in Britain Archive</label></div> <div class="span3"><input type="checkbox" name="limit" value="mc-loc:ARAM"><label for="ARAM">  Aram Collection</label></div><div class="span3"><input type="checkbox" id="loc-35" name="limit" value="mc-loc:ACASS"><label for="loc-35">  Audio cassettes</label></div><div class="span3"><input type="checkbox" id="loc-36" name="limit" value="mc-loc:ARTHUR"><label for="loc-36">  Catherine Arthur Collection</label></div> </div><div class="row-fluid"><div class="span3"><input type="checkbox" id="loc-38" name="limit" value="mc-loc:CDR"><label for="loc-38">  CD-ROMs</label></div><div class="span3"><input type="checkbox" id="loc-39" name="limit" value="mc-loc:CD"><label for="loc-39">  CDs</label></div><div class="span3"><input type="checkbox" id="loc-40" name="limit" value="mc-loc:CSMM_SC"><label for="loc-40">  CSM - Museum & Study Collection</label></div><div class="span3"><input type="checkbox" id="loc-42" name="limit" value="mc-loc:DIS"><label for="loc-42">  Dissertations</label></div></div><div class="row-fluid"> <div class="span3"><input type="checkbox" id="loc-43" name="limit" value="mc-loc:DVD"><label for="loc-43">  DVDs</label></div> <div class="span3"><input type="checkbox" id="loc-44" name="limit" value="mc-loc:EBK"><label for="loc-44">  e-Books</label></div> <div class="span3"><input type="checkbox" id="loc-45" name="limit" value="mc-loc:EJOURN"><label for="loc-45">  e-Journals</label></div><div class="span3"><input type="checkbox" name="limit" value="mc-loc:EMAP_ART or mc-loc:EMAP"><label for="loc-emap">  EMAP archives</label></div></div><div class="row-fluid"><div class="span3"><input type="checkbox" id="loc-51" name="limit" value="mc-loc:FILMS"><label for="loc-51">  Film scripts</label></div><div class="span3"><input type="checkbox" id="loc-52" name="limit" value="mc-loc:PINK"><label for="loc-52">  Gerald Pink Collection</label></div><div class="span3"><input type="checkbox" id="loc-57" name="limit" value="mc-loc:RUSKIN"><label for="loc-57">  John Ruskin Collection</label></div>  <div class="span3"><input type="checkbox" name="limit" value="mc-loc:JOUR or mc-loc:JOUR1 or mc-loc:JOUR2"> <label for="Journals">  Journals</label></div></div><div class="row-fluid"><div class="span3"><input type="checkbox" id="loc-63" name="limit" value="mc-loc:KEYTXT"><label for="loc-63">  Key texts</label></div><div class="span3"><input type="checkbox" id="loc-67" name="limit" value="mc-loc:HISTJOUR"><label for="loc-67">  Historical Journals Collection</label></div><div class="span3"><input type="checkbox" id="loc-68" name="limit" value="mc-loc:MAIN"><label for="loc-68">  Main collection</label></div><div class="span3"><input type="checkbox" id="loc-76" name="limit" value="mc-loc:PICKERING"><label for="loc-76">  Pickering Collection</label></div></div><div class="row-fluid"><div class="span3"><input type="checkbox" id="loc-69" name="limit" value="mc-loc:MATPROD"><label for="loc-69">  Materials & Products Collection</label></div><div class="span3"><input type="checkbox" id="loc-70" name="limit" value="mc-loc:NDBK"><label for="loc-70">  Netherlands Decorated Book Collection</label></div><div class="span3"><input type="checkbox" id="loc-74" name="limit" value="mc-loc:WWW"><label for="loc-74">  Online resources</label></div></div><div class="row-fluid"><div class="span3"><input type="checkbox" id="loc-75" name="limit" value="mc-loc:OS"><label for="loc-75">  Oversize</label></div><div class="span3"><input type="checkbox" id="loc-77" name="limit" value="mc-loc:PHC"><label for="loc-77">  Printing Historical Collection</label></div><div class="span3"><input type="checkbox" id="loc-79" name="limit" value="mc-loc:PREF"><label for="loc-79">  Project reference</label></div><div class="span3"><input type="checkbox" id="loc-80" name="limit" value="mc-loc:QREF"><label for="loc-80">  Quick reference</label></div></div><div class="row-fluid"><div class="span3"><input type="checkbox" id="loc-83" name="limit" value="mc-loc:REF"><label for="loc-83">  Reference</label></div><div class="span3"><input type="checkbox" id="loc-87" name="limit" value="mc-loc:SPEC"><label for="loc-87">  Special collections</label></div><div class="span3"><input type="checkbox" id="loc-88" name="limit" value="mc-loc:STAND"><label for="loc-88">  Standards</label></div><div class="span3"><input type="checkbox" id="loc-90" name="limit" value="mc-loc:JOUR"><label for="loc-90">  Store</label></div></div><div class="row-fluid"><div class="span3"><input type="checkbox" id="loc-91" name="limit" value="mc-loc:ESTREAM"><label for="loc-91">  Streaming media</label></div><div class="span3"><input type="checkbox" id="loc-92" name="limit" value="mc-loc:MORRIS"><label for="loc-92">  Talwin Morris Collection</label></div><div class="span3"><input type="checkbox" id="loc-93" name="limit" value="mc-loc:THE"><label for="loc-93">  Theses</label></div><div class="span3"><input type="checkbox" id="loc-95" name="limit" value="mc-loc:VHS"><label for="loc-95">  VHS videocassettes</label></div></div><div class="row-fluid"><div class="span3"><input type="checkbox" id="loc-96" name="limit" value="mc-loc:CRANE"><label for="loc-96">  Walter Crane Collection</label></div><div class="span3"><input type="checkbox" id="loc-97" name="limit" value="mc-loc:YBK"><label for="loc-97">  Yearbooks</label></div><div class="span3"><input type="checkbox" name="limit" value="(mc-loc:COLEMAN and branch:ASCC) or (mc-loc:SPEC and branch:ASCC) or (mc-loc:HN and branch:ASCC) or (mc-loc:REF and branch:ASCC) or (mc-loc:SCHLESINGER and branch:ASCC) or (mc-loc:KUBRICK and branch:ASCC) or (mc-loc:TUSA and branch:ASCC) or (mc-loc:DICKINSON and branch:ASCC)"><label for="ASCC">  Archives and Special Collections Centre Special Collections</label></div><div class="span3"><input type="checkbox" name="limit" value="(mc-loc:ARTBK and branch:CCA) or (mc-loc:SPEC and branch:CCA) or (mc-loc:CRANE and branch:CCA)"><label for="Camberwell Special Collections">  Camberwell Special Collections</label></div></div><div class="row-fluid"><div class="span3"><input type="checkbox" name="limit" value="(mc-loc:ACAA and branch:CHE) or (mc-loc:ARC and branch:CHE) or (mc-loc:ARTBK and branch:CHE) or (mc-loc:EPHE and branch:CHE) or (mc-loc:MULTI and branch:CHE) or (mc-loc:POST and branch:CHE) or (mc-loc:RBK and branch:CHE) or (mc-loc:RPER and branch:CHE) or (mc-loc:RUSKIN and branch:CHE) or (mc-loc:SPEC and branch:CHE)"><label for="Chelsea Special Collections">  Chelsea Special Collections</label></div><div class="span3"><input type="checkbox" name="limit" value="mc-loc:SPEC and branch:CSM"><label for="CSM Special Collections">  CSM Special Collections</label></div></div></fieldset>');
+
+    //JM Rename Shelving location to Collection
+    $("a[href='#advsearch-loc']:contains('Shelving location')").html('Collection');
+
+    //JM purchase sugg
+    $("div#usersuggestions > p:contains('There are no pending purchase suggestions.')").hide();
+
+    //JM Home breadcrumb home page
+    $(".breadcrumb > li:nth-child(1) > a:nth-child(1)").html('Library Search Home');
+
+    //JM Facets Itemtype label change
+    $("h5#facet-itemtypes").html('Loan period');
+
+    //JM AdvSearch Itemtype label change
+    $("a#ui-id-2:contains('Item type')").html('Loan period');
+
+    //JM Authority change to Name-Subject on My account
+    $("a#ui-id-2:contains('Authority')").html('Name and Subject');
+
+    //JM Item issue on Account Settings rename
+    $("td:contains('Item issue')").html('Item borrowed');
+
+    //JM Self registration
+    $("li:contains('Register a new account')").html('Apply for membership');
+    $("div#add-account").before('<p><b> If you are a student at UAL you will automatically have a library account and do not need to apply for membership.</b></p>A member of staff will respond to your request for membership within 2 working days. If you are eligible we will email you details of how to complete the registration process. If you are unsure about whether you are eligible for membership please see our visitors and alumni page here: <a href="http://www.arts.ac.uk/study-at-ual/library-services/visitors-and-alumni/">http://www.arts.ac.uk/study-at-ual/library-services/visitors-and-alumni/</a></p>');
+    $("label[for='borrower_branchcode']").html('College:');
+    $("label[for='borrower_title']").html('Title:');
+    $("label[for='borrower_surname']").html('Family name:');
+    $("label[for='borrower_email']").html('University/Primary email:');
+    $("label[for='borrower_emailpro']").html('Private/Secondary email:');
+    $("label[for='borrower_contactnote']").html('Alumni ID and course studied with dates OR Sconul Band and home institution:');
+    $("legend#mainaddress_legend").html('Current address');
+
+
+    //JM ILL changes
+    // Label changes in ILL search form
+    $("fieldset.rows > ol > li > label[for='branch']").html('Home library:');
+    $("li#illtype").insertBefore('li#illkeyword');
+    $("fieldset.rows > ol > li > label[for='query_value']:contains('Keywords:')").html('Title:');
+    $("li#illauthor").insertAfter('li#illkeywords');
+    //$("li#illtitle").hide();
+    $("fieldset.rows > ol > li > label[for='type']:contains('Type:')").html('Select type from pulldown:');
+    //$("li a:contains('Cancel request')").hide();
+    //$("td > ul > li > a[title='Request to have this request cancelled']").css('list-style','none');
+    $("td > ul > li > a[title='Request to have this request cancelled']").addClass('ill-cancel');
+    $("li > a[title='Request an interlibrary loan']").html('Interlibrary loans');
+
+    //JM hide borrower options + CSS
+    $("fieldset.rows > legend:contains('Borrower Options')").hide();
+
+    //JM hide Tickbox label for ACchecker compliance
+    $("label:contains('Tickbox')").hide();
+
+    //JM test hide Material type ccode facet
+    $("li > span.facet-label > a[title='WWW']").hide();
+    $("li > span.facet-label > a[title='JOUH']").hide();
+
+    //Make ILL request link clearer
+    $("td > a[href*='?op=request&query_value=BL']").html('Request Interlibrary Loan');
+    $("td > a[href*='?op=request&query_value=ET']").html('Request Article');
+
+    //ILL Manual form modifications
+    //$("fieldset.rows:nth-child(1) > ol:nth-child(4) > li:nth-child(1)").hide();
+    //$("fieldset.rows:nth-child(1) > ol:nth-child(4) > li:nth-child(2)").hide();
+    //$("fieldset.rows:nth-child(1) > ol:nth-child(4) > li:nth-child(5)").hide();
+    //$("fieldset.rows:nth-child(1) > ol:nth-child(4) > li:nth-child(7)").hide();
+    //$("fieldset.rows:nth-child(1) > ol:nth-child(4) > li:nth-child(8)").hide();
+    //$("fieldset.rows:nth-child(1) > ol:nth-child(4) > li:nth-child(14)").hide();
+    //$("fieldset.rows:nth-child(1) > ol:nth-child(4) > li:nth-child(15)").hide();
+    //$("fieldset.rows:nth-child(1) > ol:nth-child(4) > li:nth-child(16)").hide();
+    //$("fieldset.rows:nth-child(1) > ol:nth-child(4) > li:nth-child(17)").hide();
+    //$("fieldset.rows:nth-child(1) > ol:nth-child(4) > li:nth-child(19)").hide();
+    //$("fieldset.rows:nth-child(1) > ol:nth-child(4) > li:nth-child(21)").hide();
+    //$("fieldset.rows:nth-child(1) > ol:nth-child(4) > li:nth-child(23)").hide();
+    //$("fieldset.rows:nth-child(1) > ol:nth-child(4) > li:nth-child(24)").hide();
+    //$("fieldset.rows:nth-child(1) > ol:nth-child(4) > li:nth-child(25)").hide();
+
+    //OPAC ILL additional text on Manual request page
+    $(".span10 > h2:contains('Create manual request')").after('<p>Please complete the form below with as much information as possible. </p>');
+
+    //OPAC ILL additional text on new ILL
+    $("fieldset.rows > legend:contains('Search Form')").after('<p class="illfont">Enter the title or some keywords and add the author\'s surname if you know it. You will need to collect your interlibrary loan from your college library when it arrives, or if electronic it will be sent to your UAL email.</p>');
+
+    //JM ILL add manual entry button after no results found
+    $("a.btn.btn-default.btn-sm[title='Amend your search']").after('<p class="illfont">If you do not find what you are looking for please <a href="?op=manual">click here </a>to send us the details you have.</p>');
+
+    //JM change request placed acknowledgement
+    $("span#request_placement_ok").html('Your request has been placed');
+
+    //JM remove Entry form from Manual entry page
+    $("form > fieldset > legend:contains('Entry Form')").hide();
+
+    //OPAC ILL move illtype to the top on search
+    $("li#illtype").insertBefore("li#illkeywords");
+
+    //ILL hide Cancel request + CSS
+    $("td > ul > li > a[title='Request to have this request cancelled']").hide();
+    $("td > ul > li > a[title='Edit your comments.']").hide();
+
+    //ILL move manual entry to bottom of page and change words
+    $(".span10 > p:contains('Alternatively,')").insertAfter('form[action="/cgi-bin/koha/opac-ill.pl?op=search"]').replaceWith('If you do not find what you are looking for please <a href="?op=manual">click here </a>to send us the details you have.');
+
+    //JM ILL add classes for th and td layout in user request view
+    $("th.\\.\\/metadata\\/itemLevel\\/edition").addClass("illth");
+    $("th.\\.\\/metadata\\/itemLevel\\/issue").addClass("illth");
+    $("th.\\.\\/metadata\\/itemLevel\\/volume").addClass("illth");
+    $("th.\\.\\/metadata\\/itemLevel\\/year").addClass("illth");
+    $("th.\\.\\/metadata\\/itemOfInterestLevel\\/author").addClass("illth");
+    $("th.\\.\\/metadata\\/itemOfInterestLevel\\/pages").addClass("illth");
+    $("th.\\.\\/metadata\\/itemOfInterestLevel\\/title").addClass("illth");
+    $("th.\\.\\/metadata\\/titleLevel\\/author").addClass("illth");
+    $("th.\\.\\/metadata\\/titleLevel\\/isbn").addClass("illth");
+    $("th.\\.\\/metadata\\/titleLevel\\/issn").addClass("illth");
+    $("th.\\.\\/metadata\\/titleLevel\\/publisher").addClass("illth");
+    $("th.\\.\\/metadata\\/titleLevel\\/title").addClass("illth");
+    $("th.\\.\\/type").addClass("illth");
+    $("th.prefix_id").addClass("illth");
+    $("th.status").addClass("illth");
+    $("th.actions").addClass("illth");
+
+    $("td.\\.\\/metadata\\/itemLevel\\/edition").addClass("illtd");
+    $("td.\\.\\/metadata\\/itemLevel\\/issue").addClass("illtd");
+    $("td.\\.\\/metadata\\/itemLevel\\/volume").addClass("illtd");
+    $("td.\\.\\/metadata\\/itemLevel\\/year").addClass("illtd");
+    $("td.\\.\\/metadata\\/itemOfInterestLevel\\/author").addClass("illtd");
+    $("td.\\.\\/metadata\\/itemOfInterestLevel\\/pages").addClass("illtd");
+    $("td.\\.\\/metadata\\/itemOfInterestLevel\\/title").addClass("illtd");
+    $("td.\\.\\/metadata\\/titleLevel\\/author").addClass("illtd");
+    $("td.\\.\\/metadata\\/titleLevel\\/isbn").addClass("illtd");
+    $("td.\\.\\/metadata\\/titleLevel\\/issn").addClass("illtd");
+    $("td.\\.\\/metadata\\/titleLevel\\/publisher").addClass("illtd");
+    $("td.\\.\\/metadata\\/titleLevel\\/title").addClass("illtd");
+    $("td.\\.\\/type").addClass("illtd");
+    $("td.prefix_id").addClass("illtd");
+    $("td.status").addClass("illtd");
+    $("td.actions").addClass("illtd");
+
+    //JM ILL add classes for layout in results view
+    $("th#\\.\\/metadata\\/itemLevel\\/edition").addClass("illth");
+    $("th#\\.\\/metadata\\/itemLevel\\/issue").addClass("illth");
+    $("th#\\.\\/metadata\\/itemLevel\\/volume").addClass("illth");
+    $("th#\\.\\/metadata\\/itemLevel\\/year").addClass("illth");
+    $("th#\\.\\/metadata\\/itemOfInterestLevel\\/author").addClass("illth");
+    $("th#\\.\\/metadata\\/itemOfInterestLevel\\/pages").addClass("illth");
+    $("th#\\.\\/metadata\\/itemOfInterestLevel\\/title").addClass("illth");
+    $("th#\\.\\/metadata\\/titleLevel\\/author").addClass("illth");
+    $("th#\\.\\/metadata\\/titleLevel\\/isbn").addClass("illth");
+    $("th#\\.\\/metadata\\/titleLevel\\/issn").addClass("illth");
+    $("th#\\.\\/metadata\\/titleLevel\\/publisher").addClass("illth");
+    $("th#\\.\\/metadata\\/titleLevel\\/title").addClass("illth");
+    $("th#\\.\\/type").addClass("illth");
+    $("th#prefix_id").addClass("illth");
+    $("th#status").addClass("illth");
+    $("th#actions").addClass("illth");
+
+    //ILL add copyright alert for article
+    $("a:contains('Request Article')").click(function() {
+        alert('By clicking OK, I declare that \n\n(a) I have not previously been supplied with a copy of the same material by UAL Library Services or any other librarian / library\n\n (b) I will not use the copy except for research for a non-commercial purpose or private study and will not supply a copy of it to any other person \n\n(c) to the best of my knowledge no other person with whom I work or study has made or intends to make a request for the same material. \n\n I understand that if my declaration is false, the copy supplied to me by UAL Library Services will infringe copyright law and that I will be liable for infringement of copyright as if I had made the copy myself. \n\n If you have any questions regarding the terms of this declaration, or the legal status of your request please contact your college library before clicking OK.');
+    });
+
+    //ILL add copyright alert for book
+    $("a:contains('Request Interlibrary Loan')").click(function() {
+        alert('By clicking OK, I declare that \n\n(a) I have not previously been supplied with a copy of the same material by UAL Library Services or any other librarian / library\n\n (b) I will not use the copy except for research for a non-commercial purpose or private study and will not supply a copy of it to any other person \n\n(c) to the best of my knowledge no other person with whom I work or study has made or intends to make a request for the same material. \n\n I understand that if my declaration is false, the copy supplied to me by UAL Library Services will infringe copyright law and that I will be liable for infringement of copyright as if I had made the copy myself. \n\n If you have any questions regarding the terms of this declaration, or the legal status of your request please contact your college library before clicking OK.');
+    });
+
+    //JM ILL header change wording
+    $("h2:contains('Search the British Library')").html('Search the British Library catalogue for items not held at UAL');
+
+    //JM ILL header on manual request change wording
+    $("h2:contains('Create manual request')").html('Interlibrary loan request form');
+
+    //JM ILL hide fields on user requests page
+    $("th.\\.\\/uin").hide();
+    $("td.\\.\\/uin").hide();
+    $("th.biblionumber").hide();
+    $("td.biblionumber").hide();
+    $("th.borrower").hide();
+    $("td.borrower").hide();
+    $("th.primary_cost").hide();
+    $("td.primary_cost").hide();
+    $("th.primary_manual").hide();
+    $("td.primary_manual").hide();
+    $("th.reqtype").hide();
+    $("td.reqtype").hide();
+
+    //ILL JM hide BL Identifier th on search results page
+    $("th#\\.\\/uin").hide();
+
+
+    //JM reservations popup - altered by MG ticket 109377
+    // JF Altered again as per call 30773
+    $("a.reserve").click(function() {
+        //alert('If this item is available at your college library it will be quicker to collect from the shelf yourself. Reserving this item will result in a 48 hour delay for collection.');
+        //alert('Pick your college library for collection and we will email you when your item is ready to collect.');
+        var gotoURL = $(this).attr('href');
+        $("#cbutton").click(function() {
+            window.location.href = gotoURL;
+        });
+        $('#holdModal').modal();
+        return false;
+    });
+    $("a.hold").click(function() {
+        //alert('If this item is available at your college library it will be quicker to collect from the shelf yourself. Reserving this item will result in a 48 hour delay for collection.');
+        //alert('Pick your college library for collection and we will email you when your item is ready to collect.');
+        var gotoURL = $(this).attr('href');
+        $("#cbutton").click(function() {
+            window.location.href = gotoURL;
+        });
+        $('#holdModal').modal();
+        return false;
+    });
+
+    $(".container-fluid").append('<div id="holdModal" class="modal fade" tabindex="-1" role="dialog">' +
+        '<div class="modal-dialog" role="document">' +
+        '<div class="modal-content">' +
+        '<div class="modal-body">' +
+        '<p>Pick your college library for collection and we will email you when your item is ready to collect.</p>' +
+        '</div>' +
+        '<div class="modal-footer">' +
+        '<button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>' +
+        '<button type="button" class="btn btn-primary" id="cbutton">Continue</button>' +
+        '</div>' +
+        '</div><!-- /.modal-content -->' +
+        '</div><!-- /.modal-dialog -->' +
+        '</div><!-- /.modal -->');
+
+    /* JM Switch */
+    switch (window.location.pathname) {
+        case '/cgi-bin/koha/opac-detail.pl':
+            $("div#moresearches > ul > li:contains('Simple search')").hide();
+            break;
+        case '/cgi-bin/koha/opac-main.pl':
+            $("div#moresearches > ul > li:contains('Simple search')").hide();
+            break;
+        case '/':
+            $("div#moresearches > ul > li:contains('Simple search')").hide();
+            break;
+        case '/cgi-bin/koha/opac-reserve.pl':
+            $("div#moresearches > ul > li:contains('Simple search')").hide();
+            break;
+    }
+
+    //Login box changes
+    $("h4:contains('Shibboleth Login')").html('University of the Arts London Login');
+    $("p:contains('If you do not have a Shibboleth account, but you do have a local login, then you may login below:')").html('If you have already registered to use UAL libraries, please log in below:');
+    $("p:contains('If you have a Shibboleth account')").html('If you are a student or member of staff, please <a href="https://libsearch.arts.ac.uk/Shibboleth.sso/Login?target=https://libsearch.arts.ac.uk/cgi-bin/koha/opac-user.pl">click here to login</a>');
+    $("h4:contains('Local login')").html('Sconul users\' login');
+
+    $("span#registrationinstructions:contains('You may')").html('you may <a href="/cgi-bin/koha/opac-memberentry.pl">apply for membership here</a>');
+
+    // Login box
+    $('.active-links').click(function() {
+        if ($('#signin-dropdown').is(":visible")) {
+            $('#signin-dropdown').hide()
+            $('#session').removeClass('active');
+        } else {
+            $('#signin-dropdown').show()
+            $('#session').addClass('active');
+        }
+        return false;
+    });
+
+    $('#signin-dropdown').click(function(e) {
+        e.stopPropagation();
+    });
+    $(document).click(function() {
+        $('#signin-dropdown').hide();
+        $('#session').removeClass('active');
+    });
+
+    $("#signin-dropdown").detach().appendTo('#session');
+
+    $("label[for='userid']").text("Username:");
+
+
+    // Append share button
+    //$("div#social_networks.clearfix").replaceWith("<span class='st_sharethis' displayText='ShareThis'></span><span class='st_' displayText=''></span>");
+
+    // MR - Login
+    // Add login dropdown
+    $("#moresearches").append('<div class="dropdown pull-right" id="login_dropdown_mr"><button class="btn btn-default dropdown-toggle" type="button" id="loginDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">Login<span class="caret"></span></button><div id="login-dropdown" class="dropdown-menu" aria-labelledby="login-dropdown"><form action="/cgi-bin/koha/opac-user.pl" method="post" name="auth" id="auth"><input type="hidden" name="koha_login_context" value="opac"><fieldset class="brief"><label for="userid">Username:</label><input type="text" id="userid" name="userid"><label for="password">Password:</label><input type="password" id="password" name="password"><fieldset class="action"><input type="submit" value="Log in" class="btn pull-right"></fieldset></fieldset></form></div></div>');
+    //$("#moresearches").append('<div class="dropdown pull-right" id="login_dropdown_mr"><button class="btn btn-default dropdown-toggle" type="button" id="usermenuDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">Login<span class="caret"></span></button><div id="login-dropdown" class="dropdown-menu" aria-labelledby="login-dropdown-menu"><div class="fontSizes"><a href="https://libsearch.arts.ac.uk/Shibboleth.sso/Login?target=https://libsearch.arts.ac.uk/cgi-bin/koha/opac-user.pl" title="UAL staff and students&apos; login">UAL staff and students&apos; login</a></div><div class="fontSizes"><a href="/cgi-bin/koha/opac-user.pl">External users&apos; login</a></div></div></div>');
+
+    $("div#moresearches > ul > li:contains('Advanced search')").hide();
+    $("#moresearches").prepend('<div class="dropdown pull-left" id="adv_search_dropdown"><button class="btn btn-default dropdown-toggle" type="button" id="advSearchDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">Advanced Search<span class="caret"></span></button><div id="advsearch-dropdown" class="dropdown-menu" aria-labelledby="advsearch-dropdown"><a href="/cgi-bin/koha/opac-search.pl">Catalogue Advanced Search</a><a href="https://articlesplus.arts.ac.uk/" target="_blank">Articles Plus Advanced Search</a></div></div>');
+
+    // Add user dropdown
+    $("#moresearches").append('<div class="dropdown pull-right" id="user_menu_mr"><button class="btn btn-default dropdown-toggle" type="button" id="usermenuDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">Your account<span class="caret"></span></button><div id="user-dropdown" class="dropdown-menu" aria-labelledby="user-dropdown-menu"><!--<div class="btn"><a href="/cgi-bin/koha/opac-search-history.pl" title="View your search history">Search history</a> [<a class="logout" href="/cgi-bin/koha/opac-search-history.pl?action=delete" title="Delete your search history" onclick="return confirm(MSG_DELETE_SEARCH_HISTORY);">x</a>]</div><div class="btn"><a href="/cgi-bin/koha/opac-account.pl">Fines</a></div>--><div class="btn"><a href="/cgi-bin/koha/opac-user.pl">Summary</a></div><div class="btn"><a class="logout" id="logout_mr" href="/cgi-bin/koha/opac-main.pl?logout.x=1">Log out</a></div></div></div>');
+
+    // Control which displays (depending if logged in)
+    if ($('.loggedinusername').length) {
+        $('div#login_dropdown_mr').hide();
+        $('div#user_menu_mr').show();
+    } else {
+        $('div#login_dropdown_mr').show();
+        $('div#user_menu_mr').hide();
+    }
+    // MR - END
+
+
+    $('#moresearches').append('<div class="screenOptions">Screen Options<div class="screenOptionsDropDown"><div class="fontSizes"><span class="fontSize">Font size</span><div class="sizeDown">A</div><div class="normal">A</div><div class="sizeUp">A</div></div><div class="defaultOption">Default Style</div><div class="creamOption">Cream with Black Text</div><div class="blueOption">Blue with Black Text</div><div class="blackOption">Black with Yellow Text</div></div></div><a href="http://arts.ac.libguides.com/libsearch_help" target="_blank" class="helpBtn">Help</a><a href="https://arts.ac.libguides.com/accessibilitystatements/librarysearch" target="_blank" class="helpBtn">Accessibility statements</a>');
+
+
+    // CG/JF - For font sizer
+    //$(".sizeUp").click(function() {
+    //    $("body").css("font-size", "120%");
+    //});
+
+    //$(".normal").click(function() {
+    //    $("body").css("font-size", "87.5%");
+    //});
+
+    //$(".sizeDown").click(function() {
+    //    $("body").css("font-size", "70%");
+    //});
+
+    var sizeUp = $.cookie('sizeUp');
+    if (sizeUp) {
+        $('body').attr('class', sizeUp);
+    }
+    $(".sizeUp").click(function() {
+        $("body").addClass("sizeUpFont");
+        $("body").removeClass("normal sizeDownFont");
+        $.cookie('sizeUp', $('body').attr('class'));
+
+    });
+    $(".normal").click(function() {
+        $("body").removeClass("sizeUpFont");
+        $.cookie('sizeUp', $('body').attr('class'));
+
+    });
+
+
+    var sizeDown = $.cookie('sizeDown');
+    if (sizeDown) {
+        $('body').attr('class', sizeDown);
+    }
+    $(".sizeDown").click(function() {
+        $("body").addClass("sizeDownFont");
+        $("body").removeClass("normal sizeUpFont");
+        $.cookie('sizeDown', $('body').attr('class'));
+
+    });
+    $(".normal").click(function() {
+        $("body").removeClass("sizeDownFont");
+        $.cookie('sizeDown', $('body').attr('class'));
+
+    });
+
+
+    $('.screenOptionsDropDown').hide();
+
+    // $('.screenOptions').click(function() {
+    //     $('.screenOptionsDropDown').toggle();
+    // });
+
+    $(document).on('click', function(e) {
+        var elem = $(e.target).closest('.screenOptions'),
+            box = $(e.target).closest('.screenOptionsDropDown');
+
+        if (elem.length) { // the anchor was clicked
+            e.preventDefault(); // prevent the default action
+            $('.screenOptionsDropDown').toggle(); // toggle visibility
+        } else if (!box.length) { // the document, but not the anchor or the div
+            $('.screenOptionsDropDown').hide(); // was clicked, hide it !
+        }
+    });
+
+    $('#loginDropdown').click(function() {
+        $('.screenOptionsDropDown').hide();
+    });
+
+    $('#usermenuDropdown').click(function() {
+        $('.screenOptionsDropDown').hide();
+    });
+
+    // Hide the mobile login icon
+    $('#user-menu-trigger').hide();
+
+    var cream_class = $.cookie('cream_class');
+    if (cream_class) {
+        $('body').attr('class', cream_class);
+    }
+    $(".creamOption").click(function() {
+        $("body").addClass("cream");
+        $("body").removeClass("blue black");
+        $.cookie('cream_class', $('body').attr('class'));
+
+    });
+    $(".defaultOption").click(function() {
+        $("body").removeClass("cream");
+        $.cookie('cream_class', $('body').attr('class'));
+
+    });
+
+    var blue_class = $.cookie('blue_class');
+    if (blue_class) {
+        $('body').attr('class', blue_class);
+    }
+    $(".blueOption").click(function() {
+        $("body").addClass("blue");
+        $("body").removeClass("cream black");
+        $.cookie('blue_class', $('body').attr('class'));
+
+    });
+    $(".defaultOption").click(function() {
+        $("body").removeClass("blue");
+        $.cookie('blue_class', $('body').attr('class'));
+
+    });
+
+
+    var black_class = $.cookie('black_class');
+    if (black_class) {
+        $('body').attr('class', black_class);
+    }
+    $(".blackOption").click(function() {
+        $("body").addClass("black");
+        $("body").removeClass("cream blue");
+        $.cookie('black_class', $('body').attr('class'));
+
+    });
+    $(".defaultOption").click(function() {
+        $("body").removeClass("black");
+        $.cookie('black_class', $('body').attr('class'));
+
+    });
+
+
+    // AI - Relates to placing of "did you mean" box
+    //$("#toolbar").detach().prependTo("#top-pages");
+    $("#didyoumean").detach().prependTo("#top-pages");
+    $("#numresults").detach().prependTo("#top-pages");
+
+    //$(".sort_by").detach().prependTo('#toolbar');
+
+    // Required for Explorit widget code
+    $('#dwt-search-widget input[name=formName]').change(function() {
+        var value = $('#dwt-search-widget input[name=formName]:checked').val();
+        if (value == 'ftonly') {
+            $('#dwt-search-widget #fullTextOnly').val('true')
+        } else {
+            $('#dwt-search-widget #fullTextOnly').val('')
+        }
+    })
+
+    // Required for Explorit widget code
+    $('#c_dwt-search-widget input[name=formName]').change(function() {
+        var value = $('#c_dwt-search-widget input[name=formName]:checked').val();
+        if (value == 'ftonly') {
+            $('#c_dwt-search-widget #c_fullTextOnly').val('true')
+        } else {
+            $('#c_dwt-search-widget #c_fullTextOnly').val('')
+        }
+    })
+
+    /* MG opac updates July 2019 */
+
+    // Hide Name and Subject Search button in all menus
+    $("div#moresearches > ul > li:contains('Name and Subject searches')").hide();
+
+    // Hide RSS button on search results
+    $("#numresults > a").hide();
+
+    // Change styling on opac results sort dropdown to match other dropdowns
+    $("#sort_by.resort").css({
+        "-webkit-appearance": "none",
+        "border-radius": "0px",
+        "font-size": "1.2em",
+        "padding": "5px 30px 5px 10px",
+        "background": "#f2f1f1 url('/opac-tmpl/bootstrap/images/down_arrow.png') 95% center no-repeat"
+    });
+
+    // Hide duplicate headings on advanced search page
+    $("#pubrange legend").hide();
+    $("#langfilter legend").hide();
+    $("#location legend").hide();
+    $("#sortby legend").hide();
+
+    // Align Articles Plus Search with Catalogue Search
+    $("#dwtform > label").html('Search Articles Plus');
+    $("#dwt-search-widget").css({
+        "margin": ".3em 0",
+        "padding": ".3em"
+    });
+
+    // Change colour of date slider handles
+    $(".slider-handle").css({
+        "background": "none !important",
+        "background-image": "none !important",
+        "background-color": "#1f5678 !important"
+    });
+
+    // Change articles plus button in search results
+    $("#articlesPlusForm > button").text("See this search in Articles Plus");
+
+    // Correct positioning of pagination and sort button on search results
+    correctMargins(92, 96);
+
+    // Change Simple Search button text to Library Search
+    $("#moresearches > ul > li > a:contains('Simple search')").html("Library search");
+
+    // Show Library search button on single search result page
+    if (document.location.href.indexOf('opac-detail.pl') > -1) {
+        $("div#moresearches > ul > li:contains('Library search')").show();
+    }
+
+    // Hide authority search tab in search history
+    $("#tabs a#ui-id-2").hide();
+
+    // Rename Catalogue tab in search history
+    $("#tabs a#ui-id-1").text("All searches");
+
+    /* End MG opac updates July 2019 */
+
+});
+
+$('label[for="c_fullTextOnly"]').css('display', 'none');
+
+// Print Circ History
+$(document).ready(function() {
+    $("h3:contains('Loan history')").append('<h3 class="print push-right fa fa-print"><a href="#print"> Print Loan History</a></h3>');
+    $('h3 h3.print a').click(function() {
+        window.print();
+        return false;
+    });
+});
+
+// Change logo link
+$('a.brand').attr('href', 'http://www.arts.ac.uk/');
+//$('#logo').attr('href','http://www.arts.ac.uk/');
+$('#logo').click(function() {
+    window.location.href = "http://www.arts.ac.uk/";
+}); // add click for mobile devices
+
+// Hide Analytics links
+$("span.label:contains('Analytics: ')").hide();
+$("a:contains('Show analytics')").hide();
+
+
+// Hide subscriptions from statement (Call 107751) - DR
+$("#subscriptions p:contains('Subscription from')").hide();
+
+/* MG changes for 18.11 */
+
+if ($("#usermenu").length) {
+    $('a').filter(function(index) {
+        return $(this).text() === "your interlibrary loan requests";
+    }).contents().filter(function() {
+        return this.nodeType === 3 && this.textContent.trim().length;
+    }).replaceWith('Your interlibrary loans <i class="fa fa-file-text-o fa-2x"></i>');
+};
+
+$("h1#facet-collections").text("Material type");
+
+/* END MG changes for 18.11 */
+
+// Hide Camberwell as Pick up Location for Summer 2016 -CEG
+//$("[id^=branch] option[value='CCA']").remove();
+
+/* JS for Koha CoverFlow Plugin
+   This JS was added automatically by installing the CoverFlow plugin
+      Please do not modify
+      $(document).ready(function() {
+          $.getScript("/plugin/Koha/Plugin/Com/ByWaterSolutions/CoverFlow/jquery-flipster/src/js/jquery.flipster.min.js", function(data, textStatus, jqxhr) {
+                  $("head").append("<link id='flipster-css' href='/plugin/Koha/Plugin/Com/ByWaterSolutions/CoverFlow/jquery-flipster/src/css/jquery.flipster.min.css' type='text/css' rel='stylesheet' />");
+                          $('#coverflow').load("/coverflow.pl?id=21", function() {
+                                      var opt = {
+                                                      'items': '.item',
+                                                                      'minfactor': 15,
+                                                                                      'distribution': 1.5,
+                                                                                                      'scalethreshold': 0,
+                                                                                                                      'staticbelowthreshold': false,
+                                                                                                                                      'titleclass': 'itemTitle',
+                                                                                                                                                      'selectedclass': 'selectedItem',
+                                                                                                                                                                      'scrollactive': true,
+                                                                                                                                                                                      'step': {
+                                                                                                                                                                                                          'limit': 4,
+                                                                                                                                                                                                                              'width': 10,
+                                                                                                                                                                                                                                                  'scale': true
+                                                                                                                                                                                                                                                                  }
+                                                                                                                                                                                                                                                                              };
+                                                                                                                                                                                                                                                                                          $('#coverflow').flipster({});
+                                                                                                                                                                                                                                                                                                  });
+                                                                                                                                                                                                                                                                                                      });
+                                                                                                                                                                                                                                                                                                      }); */
+/* End of JS for Koha CoverFlow Plugin */
+
+/* Start JM changes at 18.11 removed from opacuserjs */
+
+//xxxt hide item type (itype) in  facet
+$("li > span.facet-label > a[title='ILL']").hide();
+$("li > span.facet-label > a[title='REVIEW']").hide();
+$("li > span.facet-label > a[title='STAFF']").hide();
+$("li > span.facet-label > a[title='4H-ACC']").hide();
+$("li > span.facet-label > a[title='4H-LT']").hide();
+$("li > span.facet-label > a[title='CBS1W']").hide();
+$("li > span.facet-label > a[title='CBS3W']").hide();
+$("li > span.facet-label > a[title='CBS3H']").hide();
+$("li > span.facet-label > a[title='CBSSD']").hide();
+
+
+//18.11 add Pickup library pulldown for opac note
+$("li > textarea[name='notesopac']").replaceWith('<select id="notesopac" name="notesopac"><option value="NONE">None specified</option><option value="CCA">Camberwell College of Arts</option><option value="CSM">Central Saint Martins</option><option value="CHE">Chelsea College of Arts</option><option value="LCC">London College of Communication</option><option value="LCF">London College of Fashion</option><option value="WCA">Wimbledon College of Arts</option></select>');
+$("label[for='notesopac']").html('Pickup from:');
+
+// 18.11 Hide unused branches in ILL JM 22-3-19
+
+$("select#branchcode > option[value='ASCC']").remove();
+$("select#branchcode > option[value='CSMM']").remove();
+$("select#branchcode > option[value='ELEC']").remove();
+$("select#branchcode > option[value='LZ']").remove();
+//$("select#branchcode > option[value='RANDS']").remove();
+$("select#branchcode > option[value='LCFA']").remove();
+//$("select#branchcode > option[value='SEC']").remove();
+$("select#branchcode > option[value='UALRO']").remove();
+
+// Ensure 'pay all' is always select for online payments
+$('.checkbox-pay').prop('checked', true).trigger("change").prop('readonly', false).click(function() {
+    return true;
+});
+
+//Change labels for BL and Freeform request options
+$("#backend-dropdown-options > li > a:contains('BLDSS')").text('Search the British Library');
+$("#backend-dropdown-options > li > a:contains('FreeForm')").text('Can\'t find it at the British Library? Use this form.');
+
+/*End JM changes */
+
+/* Start UAL "Export to RefWorks" */
+function getBiblioId() {
+    var regex = /[\\?&]biblionumber=([^&#]*)/;
+    var results = regex.exec(window.location.href);
+    return results == null ?
+        null :
+        decodeURIComponent(results[1].replace(/\+/g, " "));
+}
+
+$(document).ready(function() {
+    var vendor = "UAL Koha";
+    var id = getBiblioId();
+    if (id) {
+        var link = $("<li><a role='menuitem' href='http://www.refworks.com/express/expressimport.asp?vendor=" + encodeURI(vendor) + "&filter=RIS%20Format&encoding=65001&url=http%3A%2F%2F" + location.host + "%2Fcgi-bin%2Fkoha%2Fopac-export.pl%3Fop%3Dexport%26format%3Dris%26bib%3D" + id + "' target='RefWorksMain'>Export to RefWorks</a></div>");
+        //        $('#export .dropdown-menu a[href*="format=ris"').closest('li').remove();
+        $('#export .dropdown-menu a[href*="format=ris"').text("Export to RIS");
+        $('#export .dropdown-menu').prepend(link);
+    }
+});
+/* End UAL "Export to RefWorks" */
