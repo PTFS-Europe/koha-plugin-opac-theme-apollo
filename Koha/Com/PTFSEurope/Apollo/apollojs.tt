@@ -12,7 +12,7 @@ $(document).ready(function() {
             sortMargin = sortMargin + didyoumeanMargin;
             pagingMargin = pagingMargin + didyoumeanMargin;
         }
-        $("div.sort_by.pull-right").css({
+        $("div.sort_by.float-right").css({
             "margin-top": "-" + sortMargin + "px",
             "position": "relative",
             "z-index": "999",
@@ -460,8 +460,8 @@ $(document).ready(function() {
     $("optgroup[label='Public Lists']").attr('label', '');
 
     //JM Paynow button
-    //$("table#finest > thead").append('<tr><td colspan="4"><button id="paynow" class="btn btn-primary pull-right" name="paynow" type="submit">Pay Now</button></td></tr>');
-    // MG updated 21.11.16 $("div#useraccount > h3").prepend('<div id="paybutton" style="float: right; margin-right: 22px;"><button id="paynow" class="btn btn-primary pull-right" name="paynow" type="submit">Pay Now</button></div>');
+    //$("table#finest > thead").append('<tr><td colspan="4"><button id="paynow" class="btn btn-primary float-right" name="paynow" type="submit">Pay Now</button></td></tr>');
+    // MG updated 21.11.16 $("div#useraccount > h3").prepend('<div id="paybutton" style="float: right; margin-right: 22px;"><button id="paynow" class="btn btn-primary float-right" name="paynow" type="submit">Pay Now</button></div>');
 
     // JF My Account
     $("#menu [href='/cgi-bin/koha/opac-memberentry.pl']").remove('');
@@ -907,14 +907,14 @@ $(document).ready(function() {
 
     // MR - Login
     // Add login dropdown
-    $("#moresearches").append('<div class="dropdown pull-right" id="login_dropdown_mr"><button class="btn btn-default dropdown-toggle" type="button" id="loginDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">Login<span class="caret"></span></button><div id="login-dropdown" class="dropdown-menu" aria-labelledby="login-dropdown"><form action="/cgi-bin/koha/opac-user.pl" method="post" name="auth" id="auth"><input type="hidden" name="koha_login_context" value="opac"><fieldset class="brief"><label for="userid">Username:</label><input type="text" id="userid" name="userid"><label for="password">Password:</label><input type="password" id="password" name="password"><fieldset class="action"><input type="submit" value="Log in" class="btn pull-right"></fieldset></fieldset></form></div></div>');
-    //$("#moresearches").append('<div class="dropdown pull-right" id="login_dropdown_mr"><button class="btn btn-default dropdown-toggle" type="button" id="usermenuDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">Login<span class="caret"></span></button><div id="login-dropdown" class="dropdown-menu" aria-labelledby="login-dropdown-menu"><div class="fontSizes"><a href="https://libsearch.arts.ac.uk/Shibboleth.sso/Login?target=https://libsearch.arts.ac.uk/cgi-bin/koha/opac-user.pl" title="UAL staff and students&apos; login">UAL staff and students&apos; login</a></div><div class="fontSizes"><a href="/cgi-bin/koha/opac-user.pl">External users&apos; login</a></div></div></div>');
+    $("#moresearches").append('<li class="nav-item dropdown float-right" id="login_dropdown_mr"><button class="btn btn-default dropdown-toggle" type="button" id="loginDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">Login<span class="caret"></span></button><div id="login-dropdown" class="dropdown-menu" aria-labelledby="login-dropdown"><form action="/cgi-bin/koha/opac-user.pl" method="post" name="auth" id="auth"><input type="hidden" name="koha_login_context" value="opac"><fieldset class="brief"><label for="userid">Username:</label><input type="text" id="userid" name="userid"><label for="password">Password:</label><input type="password" id="password" name="password"><fieldset class="action"><input type="submit" value="Log in" class="btn float-right"></fieldset></fieldset></form></div></li>');
+    //$("#moresearches").append('<li class="nav-item dropdown float-right" id="login_dropdown_mr"><button class="btn btn-default dropdown-toggle" type="button" id="usermenuDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">Login<span class="caret"></span></button><div id="login-dropdown" class="dropdown-menu" aria-labelledby="login-dropdown-menu"><div class="fontSizes"><a href="https://libsearch.arts.ac.uk/Shibboleth.sso/Login?target=https://libsearch.arts.ac.uk/cgi-bin/koha/opac-user.pl" title="UAL staff and students&apos; login">UAL staff and students&apos; login</a></div><div class="fontSizes"><a href="/cgi-bin/koha/opac-user.pl">External users&apos; login</a></div></div></li>');
 
     $("div#moresearches > ul > li:contains('Advanced search')").hide();
-    $("#moresearches").prepend('<div class="dropdown pull-left" id="adv_search_dropdown"><button class="btn btn-default dropdown-toggle" type="button" id="advSearchDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">Advanced Search<span class="caret"></span></button><div id="advsearch-dropdown" class="dropdown-menu" aria-labelledby="advsearch-dropdown"><a href="/cgi-bin/koha/opac-search.pl">Catalogue Advanced Search</a><a href="https://articlesplus.arts.ac.uk/" target="_blank">Articles Plus Advanced Search</a></div></div>');
+    $("#moresearches").prepend('<li class="nav-item dropdown float-left" id="adv_search_dropdown"><button class="btn btn-default dropdown-toggle" type="button" id="advSearchDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">Advanced Search<span class="caret"></span></button><div id="advsearch-dropdown" class="dropdown-menu" aria-labelledby="advsearch-dropdown"><a href="/cgi-bin/koha/opac-search.pl">Catalogue Advanced Search</a><a href="https://articlesplus.arts.ac.uk/" target="_blank">Articles Plus Advanced Search</a></div></li>');
 
     // Add user dropdown
-    $("#moresearches").append('<div class="dropdown pull-right" id="user_menu_mr"><button class="btn btn-default dropdown-toggle" type="button" id="usermenuDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">Your account<span class="caret"></span></button><div id="user-dropdown" class="dropdown-menu" aria-labelledby="user-dropdown-menu"><!--<div class="btn"><a href="/cgi-bin/koha/opac-search-history.pl" title="View your search history">Search history</a> [<a class="logout" href="/cgi-bin/koha/opac-search-history.pl?action=delete" title="Delete your search history" onclick="return confirm(MSG_DELETE_SEARCH_HISTORY);">x</a>]</div><div class="btn"><a href="/cgi-bin/koha/opac-account.pl">Fines</a></div>--><div class="btn"><a href="/cgi-bin/koha/opac-user.pl">Summary</a></div><div class="btn"><a class="logout" id="logout_mr" href="/cgi-bin/koha/opac-main.pl?logout.x=1">Log out</a></div></div></div>');
+    $("#moresearches").append('<li class="nav-item dropdown float-right" id="user_menu_mr"><button class="btn btn-default dropdown-toggle" type="button" id="usermenuDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">Your account<span class="caret"></span></button><div id="user-dropdown" class="dropdown-menu" aria-labelledby="user-dropdown-menu"><!--<div class="btn"><a href="/cgi-bin/koha/opac-search-history.pl" title="View your search history">Search history</a> [<a class="logout" href="/cgi-bin/koha/opac-search-history.pl?action=delete" title="Delete your search history" onclick="return confirm(MSG_DELETE_SEARCH_HISTORY);">x</a>]</div><div class="btn"><a href="/cgi-bin/koha/opac-account.pl">Fines</a></div>--><div class="btn"><a href="/cgi-bin/koha/opac-user.pl">Summary</a></div><div class="btn"><a class="logout" id="logout_mr" href="/cgi-bin/koha/opac-main.pl?logout.x=1">Log out</a></div></div></li>');
 
     // Control which displays (depending if logged in)
     if ($('.loggedinusername').length) {
@@ -927,7 +927,11 @@ $(document).ready(function() {
     // MR - END
 
 
-    $('#moresearches').append('<div class="screenOptions">Screen Options<div class="screenOptionsDropDown"><div class="fontSizes"><span class="fontSize">Font size</span><div class="sizeDown">A</div><div class="normal">A</div><div class="sizeUp">A</div></div><div class="defaultOption">Default Style</div><div class="creamOption">Cream with Black Text</div><div class="blueOption">Blue with Black Text</div><div class="blackOption">Black with Yellow Text</div></div></div><a href="http://arts.ac.libguides.com/libsearch_help" target="_blank" class="helpBtn">Help</a><a href="https://arts.ac.libguides.com/accessibilitystatements/librarysearch" target="_blank" class="helpBtn">Accessibility statements</a>');
+    $('#moresearches').append('<li class="nav-item screenOptions float-right">Screen Options<div class="screenOptionsDropDown"><div class="fontSizes"><span class="fontSize">Font size</span><div class="sizeDown">A</div><div class="normal">A</div><div class="sizeUp">A</div></div><div class="defaultOption">Default Style</div><div class="creamOption">Cream with Black Text</div><div class="blueOption">Blue with Black Text</div><div class="blackOption">Black with Yellow Text</div></div></li>');
+
+    $('#moresearches').append('<li class="nav-item float-right"><a href="http://arts.ac.libguides.com/libsearch_help" target="_blank" class="helpBtn">Help</a></li>');
+
+    $('#moresearches').append('<li class="nav-item float-right"><a href="https://arts.ac.libguides.com/accessibilitystatements/librarysearch" target="_blank" class="helpBtn">Accessibility statements</a></li>');
 
 
     // CG/JF - For font sizer
