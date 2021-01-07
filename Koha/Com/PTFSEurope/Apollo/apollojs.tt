@@ -46,7 +46,6 @@ $(document).ready(function() {
         return vars;
     }
 
-
     var queryString1 = getUrlVars()["q"];
     var queryString = unescape(queryString1);
     var queryString2 = queryString.replace(/~/g, ' ');
@@ -57,8 +56,6 @@ $(document).ready(function() {
     if (queryString !== 'undefined') {
         $('#field_search1').val(queryString2);
     }
-
-
 
     // JM - Document Title
     $(document.title = 'University of the Arts Library Catalogue');
@@ -81,7 +78,6 @@ $(document).ready(function() {
     // JF - Hide regular login box and other login related stuff
     $('div#login').remove();
 
-
     // JF - Control whether login box displays or not (depending if logged in)
     if ($('.loggedinusername').length) {
         $('div#session').hide();
@@ -92,7 +88,6 @@ $(document).ready(function() {
     }
 
     $('.loginModal-trigger').remove();
-
     // JF - END of login stuff
 
     // MR - Attempt to get Cart Working Correctly
@@ -128,7 +123,6 @@ $(document).ready(function() {
     $("ul.tabs2 li:first").addClass("active").show();
     $(".tabContent2:first").show();
 
-
     $('.tabContainer2').attr('id', 'opac-main-search').prepend('<select><option value="0">Search Catalogue</option><option value="1">Search Articles Plus</option></select>');
 
     $(".tabContent2:first").show();
@@ -143,7 +137,6 @@ $(document).ready(function() {
         }
 
     });
-
     // CG - End of Dynamic tabs on search
 
     // AS - Date Slider on facets
@@ -324,26 +317,6 @@ $(document).ready(function() {
         //return false;
     });
 
-    //MG share buttons
-    /*$("div#ulactioncontainer").append('<div style="margin-top:10px;"><div style="float:left;"><a href="#" id="sharetoggle"><img src="/opac-tmpl/bootstrap/images/icon-share.png" title="Share" alt="Share" style="margin-left:6px; margin-right:6px;"/></a></div>'+
-        '<div id="sharebuttons" style="float:right;padding-right:100px;max-width:140px;">'+
-            '<a href="mailto:?subject='+$(document).find(".title").text()+'&body='+window.location.href+'"><img src="/opac-tmpl/bootstrap/images/icon-email.png" title="Email" alt="Email" style="margin-left:6px; margin-right:6px;"/></a>'+
-                '<a href="http://twitter.com/home?status='+$(document).find(".title").text()+'+'+window.location.href+'" target="_blank"><img src="/opac-tmpl/bootstrap/images/icon-twitter.png" title="Twitter" alt="Twitter" style="margin-left:6px; margin-right:6px;"/></a>'+
-                    '<a href="http://www.facebook.com/share.php?u='+window.location.href+'&title='+$(document).find(".title").text()+'" target="_blank"><img src="/opac-tmpl/bootstrap/images/icon-facebook.png" title="Facebook" alt="Facebook" style="margin-left:6px; margin-right:6px;"/></a>'+
-                        '</div></div><p id="sharetext" style="padding-top:4px;"><strong>Share</strong></p>'
-                            );
-                                $("#sharetoggle").bind("click", function() {
-                                        //$("#sharebuttons").slideToggle(150);
-                                                $("#sharebuttons").toggle("slide", function() {
-                                                            $("#sharetext").toggle();
-                                                                    });
-
-                                                                                    return false;
-                                                                                        });
-                                                                                            $(document).ready(function() {
-                                                                                                    $("#sharebuttons").toggle();
-                                                                                                        });*/
-
     // JM Advanced search hides and renames
     $("option[value='pl,wrdl']").hide();
     $("option[value='curriculum']").hide();
@@ -411,7 +384,61 @@ $(document).ready(function() {
     $("div#advsearch-itemtypes > fieldset").replaceWith('<fieldset><legend>Limit to any of the following:</legend><div class="row-fluid"><div class="span3"><input type="checkbox" value="mc-itype,phr:1W" name="limit" id="itypephr-16"><label for="itypephr-16">  1 week loan</label></div> <div class="span3"><input type="checkbox" value="mc-itype,phr:3H" name="limit" id="itypephr-17"><label for="itypephr-17">  3 hour loan</label></div> <div class="span3"><input type="checkbox" value="mc-itype,phr:3W" name="limit" id="itypephr-18"><label for="itypephr-18">  3 week loan</label></div></div><div class="row-fluid"> <div class="span3"><input type="checkbox" value="mc-itype,phr:REF" name="limit" id="itypephr-25"><label for="itypephr-25">  Reference</label></div> <div class="span3"><input type="checkbox" value="mc-itype,phr:SD" name="limit" id="itypephr-26"><label for="itypephr-26">  Same day loan</label></div></div></fieldset>');
 
     //JM UAL ccodes
-    $("div#advsearch-ccode > fieldset").replaceWith('<fieldset> <legend>Limit to any of the following:</legend> <div class="row-fluid"> <div class="span3"><input type="checkbox" value="mc-ccode:ARCMAT" name="limit" id="ccode-0"><label for="ccode-0"><img alt="Archive materials" src="/opac-tmpl/bootstrap/itemtypeimg/ual/archive_materials.png">  Archive materials</label></div> <div class="span3"><input type="checkbox" value="mc-ccode:ARTOB" name="limit" id="ccode-1"><label for="ccode-1"><img alt="Art objects" src="/opac-tmpl/bootstrap/itemtypeimg/ual/art_objects.png">  Art objects</label></div>  <div class="span3"><input type="checkbox" value="mc-ccode:ARTBK" name="limit" id="ccode-3"><label for="ccode-3"><img alt="Artists books" src="/opac-tmpl/bootstrap/itemtypeimg/ual/artist_books.png">  Artists books</label></div> <div class="span3"><input type="checkbox" value="mc-ccode:ACASS" name="limit" id="ccode-4"><label for="ccode-4"><img alt="Audio cassettes" src="/opac-tmpl/bootstrap/itemtypeimg/ual/audio_cassettes.png">  Audio cassettes</label></div> </div> <div class="row-fluid">  <div class="span3"><input type="checkbox" value="mc-ccode:CD" name="limit" id="ccode-5"><label for="ccode-5"><img alt="CDs" src="/opac-tmpl/bootstrap/itemtypeimg/ual/cds.png">  CDs and vinyl</label></div> <div class="span3"><input type="checkbox" value="mc-ccode:DVD" name="limit" id="ccode-6"><label for="ccode-6"><img alt="DVDs" src="/opac-tmpl/bootstrap/itemtypeimg/ual/dvds.png">  DVDs</label></div> <div class="span3"><input type="checkbox" value="mc-ccode:EBK" name="limit" id="ccode-7"><label for="ccode-7"><img alt="e-Books" src="/opac-tmpl/bootstrap/itemtypeimg/ual/ebooks.png">  e-Books</label></div> <div class="span3"><input type="checkbox" value="mc-ccode:EJOURN" name="limit" id="ccode-8"><label for="ccode-8"><img alt="e-Journals" src="/opac-tmpl/bootstrap/itemtypeimg/ual/ejournals.png">  e-Journals</label></div> </div> <div class="row-fluid">  <div class="span3"><input type="checkbox" value="mc-ccode:FILMS" name="limit" id="ccode-9"><label for="ccode-9"><img alt="Film scripts" src="/opac-tmpl/bootstrap/itemtypeimg/ual/film_scripts.png">  Film scripts</label></div> <div class="span3"><input type="checkbox" value="mc-ccode:JOUR" name="limit" id="ccode-10"><label for="ccode-10"><img alt="Journals" src="/opac-tmpl/bootstrap/itemtypeimg/ual/journals.png">  Journals</label></div> <div class="span3"><input type="checkbox" value="mc-ccode:PBK" name="limit" id="ccode-12"><label for="ccode-12"><img alt="Printed books" src="/opac-tmpl/bootstrap/itemtypeimg/ual/printed_books.png">  Printed books</label></div> <div class="span3"><input type="checkbox" value="mc-ccode:ESTREAM" name="limit" id="ccode-13"><label for="ccode-13"><img alt="Streaming media" src="/opac-tmpl/bootstrap/itemtypeimg/ual/streaming_media.png">  Streaming media</label></div> </div><div class="row-fluid">  <div class="span3"><input type="checkbox" value="mc-ccode:THE" name="limit" id="ccode-14"><label for="ccode-14"><img alt="Theses & dissertations" src="/opac-tmpl/bootstrap/itemtypeimg/ual/thesis.png">  Theses & dissertations</label></div> <div class="span3"><input type="checkbox" value="mc-ccode:VHS" name="limit" id="ccode-15"><label for="ccode-15"><img alt="VHS videocassettes" src="/opac-tmpl/bootstrap/itemtypeimg/ual/vhs.png">  VHS videocassettes</label></div> </div></fieldset>');
+    $("div#advsearch-ccode > fieldset").replaceWith('
+    <fieldset>
+        <legend>Limit to any of the following:</legend>
+        <div class="row-fluid">
+            <div class="span3"><input type="checkbox" value="mc-ccode:ARCMAT" name="limit" id="ccode-0">
+                <label for="ccode-0"><img alt="Archive materials" src="/opac-tmpl/bootstrap/itemtypeimg/ual/archive_materials.png">Archive materials</label>
+            </div>
+            <div class="span3"><input type="checkbox" value="mc-ccode:ARTOB" name="limit" id="ccode-1">
+                <label for="ccode-1"><img alt="Art objects" src="/opac-tmpl/bootstrap/itemtypeimg/ual/art_objects.png">Art objects</label>
+            </div>
+            <div class="span3"><input type="checkbox" value="mc-ccode:ARTBK" name="limit" id="ccode-3">
+                <label for="ccode-3"><img alt="Artists books" src="/opac-tmpl/bootstrap/itemtypeimg/ual/artist_books.png">Artists books</label>
+            </div>
+            <div class="span3"><input type="checkbox" value="mc-ccode:ACASS" name="limit" id="ccode-4">
+                <label for="ccode-4"><img alt="Audio cassettes" src="/opac-tmpl/bootstrap/itemtypeimg/ual/audio_cassettes.png">Audio cassettes</label>
+            </div>
+        </div>
+        <div class="row-fluid">
+            <div class="span3"><input type="checkbox" value="mc-ccode:CD" name="limit" id="ccode-5">
+                <label for="ccode-5"><img alt="CDs" src="/opac-tmpl/bootstrap/itemtypeimg/ual/cds.png">CDs and vinyl</label>
+            </div>
+            <div class="span3"><input type="checkbox" value="mc-ccode:DVD" name="limit" id="ccode-6">
+                <label for="ccode-6"><img alt="DVDs" src="/opac-tmpl/bootstrap/itemtypeimg/ual/dvds.png">DVDs</label>
+            </div>
+            <div class="span3"><input type="checkbox" value="mc-ccode:EBK" name="limit" id="ccode-7">
+                <label for="ccode-7"><img alt="e-Books" src="/opac-tmpl/bootstrap/itemtypeimg/ual/ebooks.png">e-Books</label>
+            </div>
+            <div class="span3"><input type="checkbox" value="mc-ccode:EJOURN" name="limit" id="ccode-8">
+                <label for="ccode-8"><img alt="e-Journals" src="/opac-tmpl/bootstrap/itemtypeimg/ual/ejournals.png">e-Journals</label>
+            </div>
+        </div>
+        <div class="row-fluid">
+            <div class="span3"><input type="checkbox" value="mc-ccode:FILMS" name="limit" id="ccode-9">
+                <label for="ccode-9"><img alt="Film scripts" src="/opac-tmpl/bootstrap/itemtypeimg/ual/film_scripts.png">Film scripts</label>
+            </div>
+            <div class="span3"><input type="checkbox" value="mc-ccode:JOUR" name="limit" id="ccode-10">
+                <label for="ccode-10"><img alt="Journals" src="/opac-tmpl/bootstrap/itemtypeimg/ual/journals.png">Journals</label>
+            </div>
+            <div class="span3"><input type="checkbox" value="mc-ccode:PBK" name="limit" id="ccode-12">
+                <label for="ccode-12"><img alt="Printed books" src="/opac-tmpl/bootstrap/itemtypeimg/ual/printed_books.png">Printed books</label>
+            </div>
+            <div class="span3"><input type="checkbox" value="mc-ccode:ESTREAM" name="limit" id="ccode-13">
+                <label for="ccode-13"><img alt="Streaming media" src="/opac-tmpl/bootstrap/itemtypeimg/ual/streaming_media.png">Streaming media</label>
+            </div>
+        </div>
+        <div class="row-fluid">
+            <div class="span3"><input type="checkbox" value="mc-ccode:THE" name="limit" id="ccode-14">
+                <label for="ccode-14"><img alt="Theses & dissertations" src="/opac-tmpl/bootstrap/itemtypeimg/ual/thesis.png">Theses & dissertations</label>
+            </div>
+            <div class="span3"><input type="checkbox" value="mc-ccode:VHS" name="limit" id="ccode-15">
+                <label for="ccode-15"><img alt="VHS videocassettes" src="/opac-tmpl/bootstrap/itemtypeimg/ual/vhs.png">VHS videocassettes</label>
+            </div>
+        </div>
+    </fieldset>
+    ');
 
     // JM My account label changes
     $("li > a[href='/cgi-bin/koha/opac-suggestions.pl']").html('Your new item suggestions');
@@ -459,10 +486,6 @@ $(document).ready(function() {
     $("optgroup[label='Private Lists']").attr('label', '');
     $("optgroup[label='Public Lists']").attr('label', '');
 
-    //JM Paynow button
-    //$("table#finest > thead").append('<tr><td colspan="4"><button id="paynow" class="btn btn-primary float-right" name="paynow" type="submit">Pay Now</button></td></tr>');
-    // MG updated 21.11.16 $("div#useraccount > h3").prepend('<div id="paybutton" style="float: right; margin-right: 22px;"><button id="paynow" class="btn btn-primary float-right" name="paynow" type="submit">Pay Now</button></div>');
-
     // JF My Account
     $("#menu [href='/cgi-bin/koha/opac-memberentry.pl']").remove('');
     $("th.sorting:contains('Call no.')").html('Shelved at');
@@ -494,13 +517,6 @@ $(document).ready(function() {
     $("p#numresults").append('<form method="post" action="https://articlesplus.arts.ac.uk/search/desktop/en/default/search.html" target="_blank" id="articlesPlusForm" class="moreArticles"><input type="hidden" id="fullRecord" name="fullRecord" value="" /> <!-- fill in the value attribute with your search term --><input type="hidden" name="formName" value="ftonly" /><input type="hidden" name="fullTextOnly" value="true" /><button type="submit">See full text articles in Articles Plus</button><!-- search button, style as needed --></form>');
 
     $("#articlesPlusForm #fullRecord").val(queryString);
-
-    // Rename Home as Library Search Home in breadcrumb
-    //$('a[href="/cgi-bin/koha/opac-main.pl"]').text("Library Search Home");
-
-    // Rename search string query_desc
-    //    $(".querycrumb").replaceWith('<a class="crumbquery" href="#">Results of search for: </a>' + queryString2);
-
 
     // Remove Public lists from Lists menu
     $(".menu-inactive:contains('No public lists')").remove();
@@ -580,8 +596,6 @@ $(document).ready(function() {
             });
         }
     });
-
-
 
     // Hide Search options by default and display on click
     $('.search-opt').hide();
@@ -687,22 +701,6 @@ $(document).ready(function() {
     //Make ILL request link clearer
     $("td > a[href*='?op=request&query_value=BL']").html('Request Interlibrary Loan');
     $("td > a[href*='?op=request&query_value=ET']").html('Request Article');
-
-    //ILL Manual form modifications
-    //$("fieldset.rows:nth-child(1) > ol:nth-child(4) > li:nth-child(1)").hide();
-    //$("fieldset.rows:nth-child(1) > ol:nth-child(4) > li:nth-child(2)").hide();
-    //$("fieldset.rows:nth-child(1) > ol:nth-child(4) > li:nth-child(5)").hide();
-    //$("fieldset.rows:nth-child(1) > ol:nth-child(4) > li:nth-child(7)").hide();
-    //$("fieldset.rows:nth-child(1) > ol:nth-child(4) > li:nth-child(8)").hide();
-    //$("fieldset.rows:nth-child(1) > ol:nth-child(4) > li:nth-child(14)").hide();
-    //$("fieldset.rows:nth-child(1) > ol:nth-child(4) > li:nth-child(15)").hide();
-    //$("fieldset.rows:nth-child(1) > ol:nth-child(4) > li:nth-child(16)").hide();
-    //$("fieldset.rows:nth-child(1) > ol:nth-child(4) > li:nth-child(17)").hide();
-    //$("fieldset.rows:nth-child(1) > ol:nth-child(4) > li:nth-child(19)").hide();
-    //$("fieldset.rows:nth-child(1) > ol:nth-child(4) > li:nth-child(21)").hide();
-    //$("fieldset.rows:nth-child(1) > ol:nth-child(4) > li:nth-child(23)").hide();
-    //$("fieldset.rows:nth-child(1) > ol:nth-child(4) > li:nth-child(24)").hide();
-    //$("fieldset.rows:nth-child(1) > ol:nth-child(4) > li:nth-child(25)").hide();
 
     //OPAC ILL additional text on Manual request page
     $(".span10 > h2:contains('Create manual request')").after('<p>Please complete the form below with as much information as possible. </p>');
@@ -901,14 +899,8 @@ $(document).ready(function() {
 
     $("label[for='userid']").text("Username:");
 
-
-    // Append share button
-    //$("div#social_networks.clearfix").replaceWith("<span class='st_sharethis' displayText='ShareThis'></span><span class='st_' displayText=''></span>");
-
-    // MR - Login
     // Add login dropdown
     $("#moresearches").append('<li class="nav-item dropdown float-right" id="login_dropdown_mr"><button class="btn btn-default dropdown-toggle" type="button" id="loginDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">Login<span class="caret"></span></button><div id="login-dropdown" class="dropdown-menu" aria-labelledby="login-dropdown"><form action="/cgi-bin/koha/opac-user.pl" method="post" name="auth" id="auth"><input type="hidden" name="koha_login_context" value="opac"><fieldset class="brief"><label for="userid">Username:</label><input type="text" id="userid" name="userid"><label for="password">Password:</label><input type="password" id="password" name="password"><fieldset class="action"><input type="submit" value="Log in" class="btn float-right"></fieldset></fieldset></form></div></li>');
-    //$("#moresearches").append('<li class="nav-item dropdown float-right" id="login_dropdown_mr"><button class="btn btn-default dropdown-toggle" type="button" id="usermenuDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">Login<span class="caret"></span></button><div id="login-dropdown" class="dropdown-menu" aria-labelledby="login-dropdown-menu"><div class="fontSizes"><a href="https://libsearch.arts.ac.uk/Shibboleth.sso/Login?target=https://libsearch.arts.ac.uk/cgi-bin/koha/opac-user.pl" title="UAL staff and students&apos; login">UAL staff and students&apos; login</a></div><div class="fontSizes"><a href="/cgi-bin/koha/opac-user.pl">External users&apos; login</a></div></div></li>');
 
     $("div#moresearches > ul > li:contains('Advanced search')").hide();
     $("#moresearches").prepend('<li class="nav-item dropdown float-left" id="adv_search_dropdown"><button class="btn btn-default dropdown-toggle" type="button" id="advSearchDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">Advanced Search<span class="caret"></span></button><div id="advsearch-dropdown" class="dropdown-menu" aria-labelledby="advsearch-dropdown"><a href="/cgi-bin/koha/opac-search.pl">Catalogue Advanced Search</a><a href="https://articlesplus.arts.ac.uk/" target="_blank">Articles Plus Advanced Search</a></div></li>');
@@ -932,20 +924,6 @@ $(document).ready(function() {
     $('#moresearches').append('<li class="nav-item float-right"><a href="http://arts.ac.libguides.com/libsearch_help" target="_blank" class="helpBtn">Help</a></li>');
 
     $('#moresearches').append('<li class="nav-item float-right"><a href="https://arts.ac.libguides.com/accessibilitystatements/librarysearch" target="_blank" class="helpBtn">Accessibility statements</a></li>');
-
-
-    // CG/JF - For font sizer
-    //$(".sizeUp").click(function() {
-    //    $("body").css("font-size", "120%");
-    //});
-
-    //$(".normal").click(function() {
-    //    $("body").css("font-size", "87.5%");
-    //});
-
-    //$(".sizeDown").click(function() {
-    //    $("body").css("font-size", "70%");
-    //});
 
     var sizeUp = $.cookie('sizeUp');
     if (sizeUp) {
@@ -980,12 +958,7 @@ $(document).ready(function() {
 
     });
 
-
     $('.screenOptionsDropDown').hide();
-
-    // $('.screenOptions').click(function() {
-    //     $('.screenOptionsDropDown').toggle();
-    // });
 
     $(document).on('click', function(e) {
         var elem = $(e.target).closest('.screenOptions'),
@@ -1042,7 +1015,6 @@ $(document).ready(function() {
 
     });
 
-
     var black_class = $.cookie('black_class');
     if (black_class) {
         $('body').attr('class', black_class);
@@ -1059,13 +1031,9 @@ $(document).ready(function() {
 
     });
 
-
     // AI - Relates to placing of "did you mean" box
-    //$("#toolbar").detach().prependTo("#top-pages");
     $("#didyoumean").detach().prependTo("#top-pages");
     $("#numresults").detach().prependTo("#top-pages");
-
-    //$(".sort_by").detach().prependTo('#toolbar');
 
     // Required for Explorit widget code
     $('#dwt-search-widget input[name=formName]').change(function() {
@@ -1145,7 +1113,6 @@ $(document).ready(function() {
     $("#tabs a#ui-id-1").text("All searches");
 
     /* End MG opac updates July 2019 */
-
 });
 
 $('label[for="c_fullTextOnly"]').css('display', 'none');
@@ -1187,38 +1154,6 @@ if ($("#usermenu").length) {
 $("h1#facet-collections").text("Material type");
 
 /* END MG changes for 18.11 */
-
-// Hide Camberwell as Pick up Location for Summer 2016 -CEG
-//$("[id^=branch] option[value='CCA']").remove();
-
-/* JS for Koha CoverFlow Plugin
-   This JS was added automatically by installing the CoverFlow plugin
-      Please do not modify
-      $(document).ready(function() {
-          $.getScript("/plugin/Koha/Plugin/Com/ByWaterSolutions/CoverFlow/jquery-flipster/src/js/jquery.flipster.min.js", function(data, textStatus, jqxhr) {
-                  $("head").append("<link id='flipster-css' href='/plugin/Koha/Plugin/Com/ByWaterSolutions/CoverFlow/jquery-flipster/src/css/jquery.flipster.min.css' type='text/css' rel='stylesheet' />");
-                          $('#coverflow').load("/coverflow.pl?id=21", function() {
-                                      var opt = {
-                                                      'items': '.item',
-                                                                      'minfactor': 15,
-                                                                                      'distribution': 1.5,
-                                                                                                      'scalethreshold': 0,
-                                                                                                                      'staticbelowthreshold': false,
-                                                                                                                                      'titleclass': 'itemTitle',
-                                                                                                                                                      'selectedclass': 'selectedItem',
-                                                                                                                                                                      'scrollactive': true,
-                                                                                                                                                                                      'step': {
-                                                                                                                                                                                                          'limit': 4,
-                                                                                                                                                                                                                              'width': 10,
-                                                                                                                                                                                                                                                  'scale': true
-                                                                                                                                                                                                                                                                  }
-                                                                                                                                                                                                                                                                              };
-                                                                                                                                                                                                                                                                                          $('#coverflow').flipster({});
-                                                                                                                                                                                                                                                                                                  });
-                                                                                                                                                                                                                                                                                                      });
-                                                                                                                                                                                                                                                                                                      }); */
-/* End of JS for Koha CoverFlow Plugin */
-
 /* Start JM changes at 18.11 removed from opacuserjs */
 
 //xxxt hide item type (itype) in  facet
@@ -1243,9 +1178,7 @@ $("select#branchcode > option[value='ASCC']").remove();
 $("select#branchcode > option[value='CSMM']").remove();
 $("select#branchcode > option[value='ELEC']").remove();
 $("select#branchcode > option[value='LZ']").remove();
-//$("select#branchcode > option[value='RANDS']").remove();
 $("select#branchcode > option[value='LCFA']").remove();
-//$("select#branchcode > option[value='SEC']").remove();
 $("select#branchcode > option[value='UALRO']").remove();
 
 // Ensure 'pay all' is always select for online payments
