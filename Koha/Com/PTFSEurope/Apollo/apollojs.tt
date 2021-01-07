@@ -27,7 +27,7 @@ $(document).ready(function() {
     $("[id^=branch] option[value='LCFA']").remove();
     //End of hide hold pickup location snippet.
 
-    $("#opac-main .mastheadsearch").remove();
+    $("#opac-main #opac-main-search").remove();
 
     // JF/MG - Get OPAC URL parameters so we can find the query parameter
     function getUrlVars() {
@@ -1156,7 +1156,7 @@ $(document).ready(function() {
 });
 
 // Change logo link
-$('a.brand').attr('href', 'http://www.arts.ac.uk/');
+$('a.navbar-brand').attr('href', 'http://www.arts.ac.uk/');
 //$('#logo').attr('href','http://www.arts.ac.uk/');
 $('#logo').click(function() {
     window.location.href = "http://www.arts.ac.uk/";

@@ -1,3 +1,4 @@
+[% SET footerjs = 1 %]
 [% INCLUDE 'doc-head-open.inc' %]
  <title>Koha: Apollo Theme: Configuration</title>
 [% INCLUDE 'doc-head-close.inc' %]
@@ -22,28 +23,61 @@
                     <input type="hidden" name="class" value="[% CLASS %]"/>
                     <input type="hidden" name="method" value="[% METHOD %]"/>
 
-                    <fieldset class="rows">
-                        <legend>Global Settings</legend>
+                    <div id="tabs">
+                        <ul>
+                            <li><a href="tabs-1" title="Global">Global</a></li>
+                            <li><a href="tabs-2" title="Top navigation">Top navigation bar</a></li>
+                        </ul>
 
-                        <ol>
-                            <li>
-                                <label for="enable_opac_payments">Enable theme: </label>
-                                <select name="enable">
-                                    [% IF enable == 'No' %]
-                                        <option value="No" selected="selected">No</option>
-                                    [% ELSE %]
-                                        <option value="No">No</option>
-                                    [% END %]
+                        <div id="tabs-1">
+                            <fieldset class="rows">
+                                <legend>Global Settings</legend>
 
-                                    [% IF enable == 'Yes' %]
-                                        <option value="Yes" selected="selected">Yes</option>
-                                    [% ELSE %]
-                                        <option value="Yes">Yes</option>
-                                    [% END %]
-                                </select>
-                            </li>
-                        </ol>
-                    </fieldset>
+                                <ol>
+                                    <li>
+                                        <label for="enable_opac_payments">Enable theme: </label>
+                                        <select name="enable">
+                                            [% IF enable == 'No' %]
+                                                <option value="No" selected="selected">No</option>
+                                            [% ELSE %]
+                                                <option value="No">No</option>
+                                            [% END %]
+
+                                            [% IF enable == 'Yes' %]
+                                                <option value="Yes" selected="selected">Yes</option>
+                                            [% ELSE %]
+                                                <option value="Yes">Yes</option>
+                                            [% END %]
+                                        </select>
+                                    </li>
+                                </ol>
+                            </fieldset>
+                        </div>
+
+                        <div id="tabs-2">
+                            <fieldset class="rows">
+                                <legend>Logo</legend>
+
+                                <ol>
+                                    <li>
+                                        <input type="checkbox" name="enable_header_url" [% IF enable_header_url %]checked="checked"[% END %] />
+                                        <label for="header_url">Logo URL: </label>
+                                        <input name="header_url" id="header_url" type="text" size="120" value="[% header_url %]" />
+                                    </li>
+                                    <li>
+                                        <input type="checkbox" name="enable_header_height" [% IF enable_header_height %]checked="checked"[% END %] />
+                                        <label for="header_height">Height: </label>
+                                        <input name="header_height" id="header_height" type="text" size="2" value="[% header_height %]" /> px
+                                    </li>
+                                    <li>
+                                        <input type="checkbox" name="enable_header_width" [% IF enable_header_width %]checked="checked"[% END %] />
+                                        <label for="header_width">Width: </label>
+                                        <input name="header_width" id="header_width" type="text" size="2" value="[% header_width %]" /> px
+                                    </li>
+                                </ol>
+                            </fieldset>
+                        </div>
+                    </div>
 
                     <fieldset class="action">
                          <input type="hidden" name="save" value="1" />
@@ -64,4 +98,11 @@
 
     </div>
 
+    [% MACRO jsinclude BLOCK %]
+    <script>
+        $(document).ready(function() {
+            $( "#tabs" ).tabs();
+        });
+    </script>
+    [% END %]
 [% INCLUDE 'intranet-bottom.inc' %]

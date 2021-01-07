@@ -70,11 +70,6 @@ body,
     font-family: "Helvetica Neue", Helvetica, Arial, sans-serif !important;
 }
 
-.navbar-inner,
-.navbar-inverse {
-    border-color: #252525 !important;
-}
-
 h5,
 #numresults,
 h1#date-range {
@@ -162,7 +157,7 @@ select {
     background-position: left top;
 }
 
-.navbar-inverse .navbar-inner {
+#header-region {
     background: #000;
 }
 
@@ -258,11 +253,11 @@ select {
     display: table;
 }
 
-#opac-main .mastheadsearch {
+#opac-main #opac-main-search {
     display: none;
 }
 
-.mastheadsearch {
+#opac-main-search {
     margin: 0;
     -webkit-border-radius: 0px;
     -moz-border-radius: 0px;
@@ -272,36 +267,36 @@ select {
     color: #FFFFFF;
 }
 
-.mastheadsearch a,
-.mastheadsearch a:visited {
+#opac-main-search a,
+#opac-main-search a:visited {
     color: #fff;
 }
 
-.mastheadsearch .tabContent2 {
+#opac-main-search .tabContent2 {
     float: left;
     width: 78%;
 }
 
-.mastheadsearch .form-inline {
+#opac-main-search .form-inline {
     float: left;
     width: 100%;
     box-sizing: border-box;
 }
 
-.mastheadsearch .form-inline br {
+#opac-main-search .form-inline br {
     display: none;
 }
 
-.mastheadsearch .mastheadsearch {
+#opac-main-search #opac-main-search {
     display: block;
 }
 
-.mastheadsearch label {
+#opac-main-search label {
     font-size: 100%;
     font-weight: normal;
 }
 
-.mastheadsearch legend,
+#opac-main-search legend,
 #results #dwt-search-widget label {
     display: none;
 }
@@ -314,30 +309,30 @@ select {
     display: block;
 }
 
-.mastheadsearch select,
-.mastheadsearch textarea,
-.mastheadsearch input[type="text"],
-.mastheadsearch input[type="password"],
-.mastheadsearch input[type="datetime"],
-.mastheadsearch input[type="datetime-local"],
-.mastheadsearch input[type="date"],
-.mastheadsearch input[type="month"],
-.mastheadsearch input[type="time"],
-.mastheadsearch input[type="week"],
-.mastheadsearch input[type="number"],
-.mastheadsearch input[type="email"],
-.mastheadsearch input[type="url"],
-.mastheadsearch input[type="search"],
-.mastheadsearch input[type="tel"],
-.mastheadsearch input[type="color"],
-.mastheadsearch .uneditable-input {
+#opac-main-search select,
+#opac-main-search textarea,
+#opac-main-search input[type="text"],
+#opac-main-search input[type="password"],
+#opac-main-search input[type="datetime"],
+#opac-main-search input[type="datetime-local"],
+#opac-main-search input[type="date"],
+#opac-main-search input[type="month"],
+#opac-main-search input[type="time"],
+#opac-main-search input[type="week"],
+#opac-main-search input[type="number"],
+#opac-main-search input[type="email"],
+#opac-main-search input[type="url"],
+#opac-main-search input[type="search"],
+#opac-main-search input[type="tel"],
+#opac-main-search input[type="color"],
+#opac-main-search .uneditable-input {
     margin-right: 10px;
     margin-left: 10px;
     background: #f2f1f1;
     border: 0;
 }
 
-.mastheadsearch input[type="text"] {
+#opac-main-search input[type="text"] {
     margin-right: 0px;
     margin-left: -4px;
     background: #d9f2ff;
@@ -345,7 +340,7 @@ select {
     margin-bottom: 0px;
 }
 
-.mastheadsearch select {
+#opac-main-search select {
     -webkit-appearance: none;
     -moz-appearance: none;
     appearance: none;
@@ -357,23 +352,23 @@ select {
     line-height: 120%;
 }
 
-.mastheadsearch #searchsubmit.btn.btn-primary,
-.mastheadsearch #searchsubmit1.btn.btn-primary,
+#opac-main-search #searchsubmit.btn.btn-primary,
+#opac-main-search #searchsubmit1.btn.btn-primary,
 #dwt-search-widget-button {
     margin: 0;
     position: absolute;
 }
 
-.mastheadsearch #searchsubmit.btn.btn-primary:hover,
-.mastheadsearch #searchsubmit1.btn.btn-primary:hover,
-.mastheadsearch #searchsubmit.btn.btn-primary:visited,
-.mastheadsearch #searchsubmit1.btn.btn-primary:visited,
+#opac-main-search #searchsubmit.btn.btn-primary:hover,
+#opac-main-search #searchsubmit1.btn.btn-primary:hover,
+#opac-main-search #searchsubmit.btn.btn-primary:visited,
+#opac-main-search #searchsubmit1.btn.btn-primary:visited,
 #dwt-search-widget-button:hover {
     background: #FFFFFF !important;
     color: #1f5678 !important;
 }
 
-.mastheadsearch .moreOptionsLink {
+#opac-main-search .moreOptionsLink {
     width: 91.2%;
 }
 
@@ -399,10 +394,10 @@ select {
 #dwt-search-widget,
 #dwt-search-widget a,
 #dwt-search-widget a:visited,
-.mastheadsearch #dwt-search-widget,
-.mastheadsearch #dwt-search-widget a,
-.mastheadsearch #dwt-search-widget a:visited,
-.mastheadsearch #dwt-search-widget a:hover
+#opac-main-search #dwt-search-widget,
+#opac-main-search #dwt-search-widget a,
+#opac-main-search #dwt-search-widget a:visited,
+#opac-main-search #dwt-search-widget a:hover
 /* Was previously color:#b9e5fb!important;
 */
 
@@ -417,7 +412,7 @@ select {
 /*target Internet Explorer 9 and Internet Explorer 10:*/
 
 @media screen and (min-width:0\0) {
-    .mastheadsearch select {
+    #opac-main-search select {
         background: none;
         padding: 5px;
     }
@@ -980,14 +975,14 @@ BREADCRUMB */
     text-decoration: underline;
 }
 
-.mastheadsearch a,
-.mastheadsearch a:visited {
+#opac-main-search a,
+#opac-main-search a:visited {
     color: #1f5678;
 }
 
-#opac-main-search .mastheadsearch .tabs2 a,
-#opac-main-search .mastheadsearch .tabs2 a:visited,
-#opac-main-search .mastheadsearch .tabs2 a:hover {
+#opac-main-search #opac-main-search .tabs2 a,
+#opac-main-search #opac-main-search .tabs2 a:visited,
+#opac-main-search #opac-main-search .tabs2 a:hover {
     color: #FFFFFF;
 }
 
@@ -2214,8 +2209,8 @@ form#auth input {
         width: 100%;
         max-width: 100%;
     }
-    .mastheadsearch #searchsubmit.btn.btn-primary,
-    .mastheadsearch #searchsubmit1.btn.btn-primary,
+    #opac-main-search #searchsubmit.btn.btn-primary,
+    #opac-main-search #searchsubmit1.btn.btn-primary,
     #dwt-search-widget-button {
         margin: 0 0 20px;
         position: static;
@@ -2250,13 +2245,13 @@ form#auth input {
         float: left;
         width: 100%;
     }
-    .mastheadsearch select {
+    #opac-main-search select {
         margin-left: 0;
     }
-    .mastheadsearch input[type="text"] {
+    #opac-main-search input[type="text"] {
         width: 80%;
     }
-    .mastheadsearch .moreOptionsLink {
+    #opac-main-search .moreOptionsLink {
         width: 83%;
     }
 }
@@ -2292,7 +2287,7 @@ form#auth input {
 }
 
 @media only screen and (min-width: 801px) and (max-width: 849px) {
-    .mastheadsearch .tabContent2 {
+    #opac-main-search .tabContent2 {
         float: left;
         width: 70%;
     }
@@ -2303,10 +2298,10 @@ form#auth input {
         width: 250px !important;
         max-width: 100%;
     }
-    .mastheadsearch select {
+    #opac-main-search select {
         margin-left: 0;
     }
-    .mastheadsearch .tabContent2 {
+    #opac-main-search .tabContent2 {
         float: left;
         width: 60%;
     }
@@ -2320,7 +2315,7 @@ form#auth input {
     .nolibrarypulldown {
         width: 62%;
     }
-    .mastheadsearch .tabContent2 {
+    #opac-main-search .tabContent2 {
         float: left;
         width: 67%;
     }
@@ -2330,7 +2325,7 @@ form#auth input {
     #opac-main-search select {
         width: 20%;
     }
-    .mastheadsearch .tabContent2 {
+    #opac-main-search .tabContent2 {
         float: left;
         width: 77%;
     }
@@ -2480,7 +2475,7 @@ do not modify */
 CSS */
 
 @-moz-document url-prefix() {
-    .mastheadsearch select,
+    #opac-main-search select,
     select {
         text-indent: 0.01px;
         text-overflow: '';
@@ -2654,7 +2649,7 @@ input.editshelf {
 body.cream,
 .cream .search-opt td,
 .cream #searchsubmit,
-.cream .mastheadsearch input[type="text"],
+.cream #opac-main-search input[type="text"],
 .cream .main,
 .cream .main .breadcrumb,
 .cream #opacmainuserblock,
@@ -2736,7 +2731,7 @@ body.cream,
     border: 1px solid #ebbf81 !important;
 }
 
-.cream .mastheadsearch,
+.cream #opac-main-search,
 .cream .btn,
 .cream .btn-primary,
 .cream .blueBtn,
@@ -2830,7 +2825,7 @@ body.cream,
 body.blue,
 .blue .search-opt td,
 .blue #searchsubmit,
-.blue .mastheadsearch input[type="text"],
+.blue #opac-main-search input[type="text"],
 .blue .main,
 .blue .main .breadcrumb,
 .blue #opacmainuserblock,
@@ -2898,7 +2893,7 @@ body.blue,
     border: 1px solid #000 !important;
 }
 
-.blue .mastheadsearch,
+.blue #opac-main-search,
 .blue .btn,
 .blue .btn-primary,
 .blue .blueBtn,
@@ -2997,7 +2992,7 @@ body.blue,
 
 body.black,
 .black #searchsubmit,
-.black .mastheadsearch input[type="text"],
+.black #opac-main-search input[type="text"],
 .black .main,
 .black .main .breadcrumb,
 .black #opacmainuserblock,
@@ -3075,7 +3070,7 @@ body.black,
     border: 1px solid #ffff00 !important;
 }
 
-.black .mastheadsearch,
+.black #opac-main-search,
 .black .btn,
 .black .btn-primary,
 .black .blueBtn,
@@ -3163,7 +3158,7 @@ body.black,
     border: 1px solid #ffff00;
 }
 
-.black .mastheadsearch input[type="text"] {
+.black #opac-main-search input[type="text"] {
     background-color: #e9e9e9 !important;
     border: 1px solid #e9e9e9;
 }
